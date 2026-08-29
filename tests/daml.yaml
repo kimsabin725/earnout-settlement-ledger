@@ -1,0 +1,10 @@
+sdk-version: 3.5.2
+name: earnout-tests
+source: daml
+version: 0.0.1
+dependencies:
+  - daml-prim
+  - daml-stdlib
+  - daml-script
+data-dependencies:
+  - ../ledger/.daml/dist/earnout-ledger-0.0.6.dar

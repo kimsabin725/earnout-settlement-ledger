@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earnout Settlement Ledger</title>
+<style>
+  :root { --bg:#0e1116; --panel:#161b22; --line:#2b3240; --txt:#dfe6ef; --dim:#8b96a5;
+          --buyer:#4f8ef7; --seller:#3fb68b; --arbiter:#c58cf2; --bank:#e0b45c; --bad:#e5655f; }
+  * { box-sizing:border-box; margin:0 }
+  body { background:var(--bg); color:var(--txt); font:14px/1.5 -apple-system,'Apple SD Gothic Neo',sans-serif; padding:16px }
+  h1 { font-size:17px; margin-bottom:2px } .sub { color:var(--dim); font-size:12px; margin-bottom:14px }
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px }
+  .pane { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px; min-height:300px }
+  .pane h2 { font-size:13px; letter-spacing:.4px; padding-bottom:6px; border-bottom:2px solid var(--c) }
+  .pane h2 small { color:var(--dim); font-weight:400; margin-left:6px; font-size:11px }
+  .pid { font:10px ui-monospace,monospace; color:var(--dim); margin:4px 0 2px; word-break:break-all }
+  .vis { font-size:11px; color:var(--dim); margin-bottom:10px; padding:4px 8px; background:#0b0e13; border-radius:5px }
+  .vis b { color:var(--txt); font-weight:600 }
+  .card { border:1px solid var(--line); border-left:3px solid var(--c); border-radius:6px; padding:8px 10px; margin-bottom:8px; font-size:12.5px }
+  .card b { font-size:12px } .card .kv { color:var(--dim); font-size:11.5px; word-break:break-all }
+  .flag { color:var(--bank); font-weight:600 } .met { color:var(--seller) } .unmet { color:var(--bad) }
+  .meter { position:relative; height:7px; background:#0b0e13; border-radius:4px; margin:6px 0 3px; overflow:hidden }
+  .meter i { position:absolute; left:0; top:0; bottom:0; border-radius:4px; background:var(--m) }
+  .meter s { position:absolute; left:80%; top:-2px; bottom:-2px; width:2px; background:var(--txt); opacity:.6 }
+  .meter-cap { display:flex; justify-content:space-between; font-size:10.5px; color:var(--dim) }
+  button { background:var(--c,#333); color:#fff; border:0; border-radius:6px; padding:5px 10px; font-size:12px; cursor:pointer; margin:2px 4px 2px 0 }
+  button.ghost { background:transparent; border:1px solid var(--line); color:var(--txt) }
+  button:disabled { opacity:.35; cursor:default }
+  input,select { background:#0b0e13; color:var(--txt); border:1px solid var(--line); border-radius:5px; padding:4px 6px; font-size:12px; width:90px; margin:2px 4px 2px 0 }
+  .row { margin:6px 0 } .bar { display:flex; gap:10px; align-items:center; margin-bottom:12px; flex-wrap:wrap }
+  .bar .pill { border:1px solid var(--line); border-radius:20px; padding:4px 12px; font-size:12px; color:var(--dim) }
+  #deal { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:12px }
+  #deal .dl { display:flex; gap:18px; flex-wrap:wrap; font-size:12.5px; margin-bottom:10px }
+  #deal .dl div { color:var(--dim) } #deal .dl b { color:var(--txt); display:block; font-size:13.5px }
+  .steps { display:flex; align-items:center; gap:0; flex-wrap:wrap }
+  .step { display:flex; align-items:center }
+  .step .dot { padding:3px 10px; border-radius:14px; font-size:11.5px; border:1px solid var(--line); color:var(--dim); white-space:nowrap }
+  .step.done .dot { background:#1d2b25; border-color:var(--seller); color:var(--seller) }
+  .step.cur .dot { background:var(--buyer); border-color:var(--buyer); color:#fff; font-weight:600 }
+  .step .ln { width:14px; height:1px; background:var(--line); margin:0 2px }
+  #log { background:#0b0e13; border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin-top:12px; font:11.5px ui-monospace,monospace; color:var(--dim); max-height:130px; overflow-y:auto; white-space:pre-wrap }
+  .ok { color:var(--seller) } .err { color:var(--bad) }
+  .empty { color:var(--dim); font-size:12px; font-style:italic; padding:8px 2px }
+  #banner { display:none; background:#2a1517; border:1px solid var(--bad); border-radius:10px; padding:12px 16px; margin-bottom:12px; font-size:13.5px }
+  #banner b { color:var(--bad) }
+</style>
+</head>
+<body>
+<h1>Earnout Settlement Ledger <span style="color:var(--dim);font-weight:400" data-t="net"></span></h1>
+<div class="sub" data-t="sub"></div>
+
+<div class="bar">
+  <button class="ghost" onclick="act('forge',{})" data-t="forgeBtn"></button>
+  <span class="pill" id="status">connecting…</span>
+  <span class="pill"><a href="?lang=en" style="color:inherit;text-decoration:none">EN</a> · <a href="?" style="color:inherit;text-decoration:none">KO</a></span>
+</div>
+
+<div id="banner"></div>
+<div id="deal"></div>
+
+<div class="pane" style="--c:var(--bank); min-height:0; margin-bottom:12px; padding:10px 14px">
+  <b style="font-size:12.5px" data-t="bankTitle"></b>
+  <span style="font-size:11px;color:var(--dim)" data-t="bankDesc"></span>
+  <div class="row">Q<span id="bq" style="font-weight:700">1</span>
+    <span data-t="metricLbl"></span><input id="bmv" value="92000000.0">
+    <span data-t="oneOffLbl"></span><input id="boo" value="0.0">
+    <button style="--c:var(--bank)" onclick="act('attest',{quarter:Number($('bq').textContent),metricValue:$('bmv').value,oneOffOutflows:$('boo').value})" data-t="attestBtn"></button>
+    <button class="ghost" onclick="act('mint',{amount:'400000000.0'})" data-t="mintBtn"></button>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="pane" style="--c:var(--buyer)"><h2>🏢 BUYER<small data-t="buyerSub"></small></h2>
+    <div class="pid" id="pid-buyer"></div>
+    <div class="vis" data-t="buyerVis"></div>
+    <div id="p-buyer"></div></div>
+  <div class="pane" style="--c:var(--seller)"><h2>👤 SELLER<small data-t="sellerSub"></small></h2>
+    <div class="pid" id="pid-seller"></div>
+    <div class="vis" data-t="sellerVis"></div>
+    <div id="p-seller"></div></div>
+  <div class="pane" style="--c:var(--arbiter)"><h2>⚖️ ARBITER<small data-t="arbiterSub"></small></h2>
+    <div class="pid" id="pid-arbiter"></div>
+    <div class="vis" data-t="arbiterVis"></div>
+    <div id="p-arbiter"></div></div>
+</div>
+<div id="log"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const LANG = new URLSearchParams(location.search).get("lang") === "en" ? "en" : "ko";
+document.documentElement.lang = LANG;
+
+const LOCALES = {
+ko: {
+  net: "— Canton LocalNet",
+  sub: "같은 원장, 다른 가시성 — 각 패널은 해당 파티가 실제로 볼 수 있는 계약만 표시합니다 (참여자 노드 ACS를 파티별로 조회)",
+  forgeBtn: "⚠️ 위조 시도 (Buyer 단독 판정 생성 — 거부되어야 정상)",
+  bankTitle: "🏦 BANK — Attestor · 지급은행",
+  bankDesc: " 지정계좌 스냅샷에 서명해 지표를 발행합니다 — Buyer는 은행 서명 데이터로만 제출 가능",
+  metricLbl: "지표", oneOffLbl: "일회성",
+  attestBtn: "계좌 스냅샷 서명·발행", mintBtn: "CashToken 4억 발행 → Buyer",
+  buyerSub: "인수법인 — 지표 제출·지급", sellerSub: "매도자 — 판정 열람·이의·확정", arbiterSub: "중재인 — 분쟁 시에만 개입",
+  buyerVis: "<b>보이는 것</b> 계약·은행 서명 지표·판정·자기 소유 토큰 · <b>안 보이는 것</b> 없음(당사자)",
+  sellerVis: "<b>보이는 것</b> 판정 결과·지표값 · <b>안 보이는 것</b> 🔒 Buyer의 원시 거래내역 (해시로만 고정)",
+  arbiterVis: "<b>보이는 것</b> 계약·판정·분쟁 · <b>안 보이는 것</b> 🔒 자금 흐름(CashToken·지급 결과)",
+  connected: "LocalNet 연결됨", connErr: "연결 오류",
+  steps: ["제안","조건 고정","Q1","Q2","Q3","Q4","확정","지급 완료"],
+  intro: `<div class="dl" style="display:block;line-height:1.9">
+    <div>📊 사모 M&A의 <b style="display:inline">24%</b>가 언아웃(실적 연동 후불)을 쓰지만, 그중 <b style="display:inline" class="unmet">28%가 분쟁</b>이 됩니다 <span style="font-size:11px">(SRS Acquiom, 2,300+ 거래)</span></div>
+    <div>🔍 이유: 인수 후 장부는 <b style="display:inline">매수자가 통제</b>합니다 — 매도자는 검증할 수 없고, 소송은 입증책임이 매도자에게 있습니다</div>
+    <div>⚖️ 이 원장: <b style="display:inline">판정 로직·데이터 출처·중재인을 계약 시점에 고정</b>합니다 — 어느 쪽도 사후에 바꿀 수 없습니다</div></div>`,
+  target: "목표", perQ: "/분기", metCond: "충족 조건", curMet: "충족", tranche: "언아웃 잔금", nowLbl: "현재", finalLbl: "최종",
+  verdictConfirmed: "판정 확정", payWait: "지급 대기 — Buyer의 Settle", resultLbl: "결과", settledTxt: "지급 완료", notMetTxt: "미충족 종결",
+  proposalT: "📋 Proposal", proposalSig: "서명: Buyer — Seller 수락 대기",
+  proposalKv: (t,M)=>`${t.metricName} · 목표 ${M(t.quarterlyTarget)}/분기 · ${t.requiredMet}/${t.totalQuarters} 충족 시 잔금 ${M(t.trancheAmount)}`,
+  acceptBtn: "Accept — 조건 고정",
+  agreementT: "📜 Agreement", agreementKv: "양측 서명으로 고정 — 조건 변경 choice 없음 · 분기는 순서대로 1회만 (원장 강제)",
+  awaitAttest: (q)=>`Q${q} 제출 대기 — 🏦 은행이 서명한 지표로만 제출 가능 (직접 입력 불가)`,
+  allReported: "전 분기 보고 완료 — Seller의 Finalize 대기",
+  finalizeBtn: (n,t)=>`Finalize (${n}/${t})`,
+  attT: "🏦 은행 서명 지표", attKv: (a,M)=>`Q${a.quarter} · ${M(a.metricValue)} · 일회성 ${M(a.oneOffOutflows)}`,
+  attSig: (a)=>`${a.basisHash} · 서명: ${a.attestor.split("::")[0]} · 1회용`, attSubmit: (q)=>`Q${q} 제출`,
+  verdictT: (q)=>`Q${q} 판정`, met: "충족", unmet: "미충족", byArbiter: "(중재 확정)",
+  flagTxt: (v,M)=>`⚠ 실적억압 의심 — 일회성 ${M(v)} 제외 시 목표 상회`,
+  basisLbl: (h)=>`근거 ${h} <span title="원시 거래내역은 온체인에 없음 — 해시로만 고정">🔒</span>`,
+  disputeBtn: "이의 제기",
+  disputeT: "⚡ Dispute", disputeKv: (a,M)=>`Q${a.verdictQuarter} · ${M(a.verdictValue)} — 중재인만 원시 근거 접근`,
+  resolveMet: "충족으로 정정", resolveUnmet: "미충족 유지",
+  oblT: "💰 지급의무", oblKv: (a,M)=>`${M(a.amount)} — Buyer→Seller`,
+  settleBtn: (has)=>`Settle — 토큰지급+종결 atomic${has?"":" (토큰 필요)"}`,
+  tokenT: "🪙 CashToken", tokenKv: (a,M)=>`${M(a.amount)} · owner: ${a.owner.split("::")[0]}`,
+  closedT: "✅ Closed",
+  emptyBuyer: "아직 계약 없음 — 아래 제안으로 시작", emptySeller: "아직 이 파티에게 보이는 계약 없음 — Buyer의 제안을 기다리는 중", emptyArbiter: "개입할 분쟁 없음 — 평시에는 observer",
+  proposeBtn: "언아웃 계약 제안 — 잔금 4억 · 분기 8천만 목표 · 3-of-4",
+  forgeBanner: (m)=>`🛡️ <b>원장이 위조를 거부했습니다.</b> Buyer 단독 서명으로는 판정(QuarterVerdict)을 만들 수 없습니다 — 판정은 Buyer·Seller 양측 서명 계약이며, 이 권한 구조 자체가 컨트랙트에 고정되어 있습니다. <span class="kv">${m}…</span>`,
+  fmt: (n)=>{ n=Number(n); return n>=1e8 ? (n/1e8).toLocaleString(undefined,{maximumFractionDigits:1})+"억" : (n/1e4).toLocaleString()+"만"; },
+},
+en: {
+  net: "— Canton LocalNet",
+  sub: "One ledger, party-specific visibility — each panel shows only the contracts that party can actually see (per-party ACS query on the participant node)",
+  forgeBtn: "⚠️ Forgery attempt (Buyer creates a verdict alone — should be rejected)",
+  bankTitle: "🏦 BANK — Attestor · Paying bank",
+  bankDesc: " Signs designated-account snapshots to issue metrics — the Buyer can only submit bank-signed data",
+  metricLbl: "Metric", oneOffLbl: "One-offs",
+  attestBtn: "Sign & issue account snapshot", mintBtn: "Mint 400M CashToken → Buyer",
+  buyerSub: "Acquirer — submits metrics, pays", sellerSub: "Seller — reviews, disputes, finalizes", arbiterSub: "Arbiter — steps in only on dispute",
+  buyerVis: "<b>Sees</b> contract · bank-signed metrics · verdicts · own tokens · <b>Hidden</b> nothing (party to all)",
+  sellerVis: "<b>Sees</b> verdicts & metric values · <b>Hidden</b> 🔒 Buyer's raw transactions (hash-committed only)",
+  arbiterVis: "<b>Sees</b> contract · verdicts · disputes · <b>Hidden</b> 🔒 money flow (CashToken, settlement)",
+  connected: "LocalNet connected", connErr: "connection error",
+  steps: ["Propose","Terms locked","Q1","Q2","Q3","Q4","Finalized","Settled"],
+  intro: `<div class="dl" style="display:block;line-height:1.9">
+    <div>📊 <b style="display:inline">24%</b> of private M&A deals use earnouts — and <b style="display:inline" class="unmet">28% of them end in dispute</b> <span style="font-size:11px">(SRS Acquiom, 2,300+ deals)</span></div>
+    <div>🔍 Why: post-closing books are <b style="display:inline">controlled by the buyer</b> — the seller cannot verify them and bears the burden of proof in court</div>
+    <div>⚖️ This ledger <b style="display:inline">locks the adjudication logic, data source, and arbiter at signing</b> — neither side can change them afterward</div></div>`,
+  target: "target", perQ: "/quarter", metCond: "required", curMet: "met", tranche: "earnout tranche", nowLbl: "so far", finalLbl: "final",
+  verdictConfirmed: "verdicts finalized", payWait: "awaiting Buyer's Settle", resultLbl: "outcome", settledTxt: "settled", notMetTxt: "closed — not met",
+  proposalT: "📋 Proposal", proposalSig: "signed: Buyer — awaiting Seller",
+  proposalKv: (t,M)=>`${t.metricName} · target ${M(t.quarterlyTarget)}/quarter · tranche ${M(t.trancheAmount)} if ${t.requiredMet}/${t.totalQuarters} met`,
+  acceptBtn: "Accept — lock terms",
+  agreementT: "📜 Agreement", agreementKv: "locked by both signatures — no choice exists to amend terms · quarters in order, once each (ledger-enforced)",
+  awaitAttest: (q)=>`Q${q} pending — submission requires a bank-signed metric (no manual entry)`,
+  allReported: "all quarters reported — awaiting Seller's Finalize",
+  finalizeBtn: (n,t)=>`Finalize (${n}/${t})`,
+  attT: "🏦 Bank-signed metric", attKv: (a,M)=>`Q${a.quarter} · ${M(a.metricValue)} · one-offs ${M(a.oneOffOutflows)}`,
+  attSig: (a)=>`${a.basisHash} · signed by ${a.attestor.split("::")[0]} · single-use`, attSubmit: (q)=>`Submit Q${q}`,
+  verdictT: (q)=>`Q${q} verdict`, met: "MET", unmet: "NOT MET", byArbiter: "(arbiter-resolved)",
+  flagTxt: (v,M)=>`⚠ suppression suspected — target met if one-off ${M(v)} excluded`,
+  basisLbl: (h)=>`basis ${h} <span title="raw transactions are not on-chain — hash-committed only">🔒</span>`,
+  disputeBtn: "Raise dispute",
+  disputeT: "⚡ Dispute", disputeKv: (a,M)=>`Q${a.verdictQuarter} · ${M(a.verdictValue)} — only the arbiter accesses the raw basis`,
+  resolveMet: "Resolve: MET", resolveUnmet: "Uphold: NOT MET",
+  oblT: "💰 Settlement obligation", oblKv: (a,M)=>`${M(a.amount)} — Buyer→Seller`,
+  settleBtn: (has)=>`Settle — token transfer + closure, atomic${has?"":" (token required)"}`,
+  tokenT: "🪙 CashToken", tokenKv: (a,M)=>`${M(a.amount)} · owner: ${a.owner.split("::")[0]}`,
+  closedT: "✅ Closed",
+  emptyBuyer: "No contract yet — start with a proposal below", emptySeller: "Nothing visible to this party yet — awaiting the Buyer's proposal", emptyArbiter: "No dispute to act on — observer in peacetime",
+  proposeBtn: "Propose earnout — 400M tranche · 80M/quarter target · 3-of-4",
+  forgeBanner: (m)=>`🛡️ <b>The ledger rejected the forgery.</b> A verdict cannot be created by the Buyer alone — QuarterVerdict is a dual-signatory contract (Buyer + Seller), and that authority structure is fixed in the contract itself. <span class="kv">${m}…</span>`,
+  fmt: (n)=>{ n=Number(n); return n>=1e6 ? (n/1e6).toLocaleString(undefined,{maximumFractionDigits:1})+"M" : (n/1e3).toLocaleString()+"K"; },
+}};
+const L = LOCALES[LANG];
+const M = L.fmt;
+document.querySelectorAll("[data-t]").forEach(el => { el.innerHTML = L[el.dataset.t]; });
+
+const log = (m, cls) => { const d = $("log"); d.innerHTML += `<div class="${cls||""}">${new Date().toLocaleTimeString()} ${m}</div>`; d.scrollTop = 1e9; };
+
+async function act(name, body) {
+  try {
+    const r = await fetch(`/api/${name}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.detail || j.error);
+    log(`✓ ${name} — ${ (j.created||[]).map(c=>c.templateId?.split(":").pop()).join(", ") || "ok" }`, "ok");
+  } catch (e) {
+    log(`✗ ${name} — ${String(e.message).slice(0,180)}`, "err");
+    if (name === "forge") {
+      const b = $("banner");
+      b.innerHTML = L.forgeBanner(String(e.message).slice(0,140));
+      b.style.display = "block"; clearTimeout(b._t); b._t = setTimeout(()=>{ b.style.display="none"; }, 9000);
+    }
+  }
+  refresh();
+}
+
+function meter(value, target, met, flagged) {
+  const pct = Math.min(value/target*80, 100);
+  const color = met ? "var(--seller)" : flagged ? "var(--bank)" : "var(--bad)";
+  return `<div class="meter" style="--m:${color}"><i style="width:${pct}%"></i><s></s></div>
+    <div class="meter-cap"><span>${M(value)}</span><span>${L.target} ${M(target)}</span></div>`;
+}
+
+function card(c, role) {
+  const a = c.args, t = c.template, id = c.contractId;
+  if (t === "EarnoutProposal") return `<div class="card"><b>${L.proposalT}</b> <span class="kv">${L.proposalSig}</span>
+    <div class="kv">${L.proposalKv(a.terms, M)}</div>
+    ${role==="seller"?`<button style="--c:var(--seller)" onclick="act('accept',{contractId:'${id}'})">${L.acceptBtn}</button>`:""}</div>`;
+  if (t === "EarnoutAgreement") { const done = Number(a.nextQuarter) > Number(a.terms.totalQuarters);
+    return `<div class="card"><b>${L.agreementT}</b> <span class="kv">${L.agreementKv}</span>
+    ${role==="buyer"&&!done?`<div class="kv">${L.awaitAttest(a.nextQuarter)}</div>`:""}
+    ${role==="buyer"&&done?`<span class="kv">${L.allReported}</span>`:""}
+    ${role==="seller"?`<button style="--c:var(--seller)" onclick="act('finalize',{agreementId:'${id}',verdictIds:VIDS})" ${done?"":"disabled"}>${L.finalizeBtn(VIDS.length, a.terms.totalQuarters)}</button>`:""}</div>`; }
+  if (t === "MetricAttestation") return `<div class="card" style="--c:var(--bank);border-left-color:var(--bank)"><b>${L.attT}</b> <span class="kv">${L.attKv(a, M)}</span>
+    <div class="kv">${L.attSig(a)}</div>
+    ${role==="buyer"&&AGR?`<button style="--c:var(--buyer)" onclick="act('submit-quarter',{agreementId:AGR,attestationId:'${id}'})">${L.attSubmit(a.quarter)}</button>`:""}</div>`;
+  if (t === "QuarterVerdict") { const met = a.resolution ?? a.met;
+    return `<div class="card"><b>${L.verdictT(a.quarter)}</b> <span class="${met?"met":"unmet"}">${met?L.met:L.unmet}</span>
+    ${a.resolution!=null?`<span class="kv">${L.byArbiter}</span>`:""} ${a.flagged&&a.resolution==null?`<span class="flag">${L.flagTxt(a.oneOffOutflows, M)}</span>`:""}
+    ${meter(a.metricValue, TARGET, met, a.flagged&&a.resolution==null)}
+    <div class="kv">${L.basisLbl(a.basisHash)}</div>
+    ${role==="seller"&&a.flagged&&a.resolution==null?`<button style="--c:var(--seller)" onclick="act('dispute',{contractId:'${id}'})">${L.disputeBtn}</button>`:""}</div>`; }
+  if (t === "Dispute") return `<div class="card"><b>${L.disputeT}</b> <span class="kv">${L.disputeKv(a, M)}</span>
+    ${role==="arbiter"?`<button style="--c:var(--arbiter)" onclick="act('resolve',{disputeId:'${id}',verdictId:VBYQ[a.verdictQuarter],resolvedMet:true,reasoning:'one-off excluded per SPA'})">${L.resolveMet}</button>
+    <button class="ghost" onclick="act('resolve',{disputeId:'${id}',verdictId:VBYQ[a.verdictQuarter],resolvedMet:false,reasoning:'upheld'})">${L.resolveUnmet}</button>`:""}</div>`;
+  if (t === "SettlementObligation") return `<div class="card"><b>${L.oblT}</b> <span class="kv">${L.oblKv(a, M)}</span>
+    ${role==="buyer"?`<button style="--c:var(--buyer)" onclick="act('settle',{obligationId:'${id}',tokenId:TOKEN})" ${TOKEN?"":"disabled"}>${L.settleBtn(!!TOKEN)}</button>`:""}</div>`;
+  if (t === "CashToken") return `<div class="card"><b>${L.tokenT}</b> <span class="kv">${L.tokenKv(a, M)}</span></div>`;
+  if (t === "EarnoutClosed") return `<div class="card"><b>${L.closedT}</b> <span class="kv">${a.outcome.replace(/([0-9.]+)/, (m)=>M(m))}</span></div>`;
+  return "";
+}
+
+function stepper(cs) {
+  const has = (t) => cs.some(c=>c.template===t);
+  const nq = cs.filter(c=>c.template==="QuarterVerdict").length;
+  const closed = cs.find(c=>c.template==="EarnoutClosed");
+  let cur = 0;
+  if (has("EarnoutProposal")) cur = 1;
+  if (has("EarnoutAgreement")) cur = 2 + nq;
+  if (has("SettlementObligation")) cur = 7;
+  if (closed) cur = 8;
+  return `<div class="steps">${L.steps.map((s,i)=>`<div class="step ${i<cur?"done":i===cur?"cur":""}"><span class="dot">${i<cur?"✓ ":""}${s}</span></div>${i<L.steps.length-1?'<div class="ln"></div>':''}`).join("")}</div>`;
+}
+
+function dealSummary(cs) {
+  const src = cs.find(c=>c.template==="EarnoutAgreement") ?? cs.find(c=>c.template==="EarnoutProposal");
+  const obl = cs.find(c=>c.template==="SettlementObligation");
+  const closed = cs.find(c=>c.template==="EarnoutClosed");
+  const metCnt = (() => { const l={}; cs.filter(c=>c.template==="QuarterVerdict").forEach(v=>l[v.args.quarter]=v.args.resolution ?? v.args.met); return Object.values(l).filter(Boolean).length; })();
+  if (!src && (obl || closed)) {
+    const did = (obl ?? closed).args.dealId;
+    return `<div class="dl">
+      <div><b>${did}</b>${L.verdictConfirmed}</div>
+      <div><b class="met">${metCnt} ${L.curMet}</b>${L.finalLbl}</div>
+      ${obl?`<div><b>${M(obl.args.amount)}</b>${L.payWait}</div>`:""}
+      ${closed?`<div><b>${closed.args.outcome.startsWith("SETTLED")?L.settledTxt:L.notMetTxt}</b>${L.resultLbl}</div>`:""}
+    </div>` + stepper(cs);
+  }
+  if (!src) return L.intro + stepper(cs);
+  const t = src.args.terms;
+  return `<div class="dl">
+    <div><b>${t.dealId}</b>${t.metricName}</div>
+    <div><b>${M(t.quarterlyTarget)}${L.perQ}</b>${L.target}</div>
+    <div><b>${t.requiredMet} / ${t.totalQuarters}</b>${L.metCond}</div>
+    <div><b class="met">${metCnt} ${L.curMet}</b>${L.nowLbl}</div>
+    <div><b>${M(t.trancheAmount)}</b>${L.tranche}</div>
+  </div>` + stepper(cs);
+}
+
+let AGR=null, TOKEN=null, VIDS=[], VBYQ={}, TARGET=80000000;
+const ORDER = ["EarnoutProposal","EarnoutAgreement","MetricAttestation","QuarterVerdict","Dispute","SettlementObligation","CashToken","EarnoutClosed"];
+const EMPTY = { buyer: `<div class="empty">${L.emptyBuyer}</div>`, seller: `<div class="empty">${L.emptySeller}</div>`, arbiter: `<div class="empty">${L.emptyArbiter}</div>` };
+
+fetch("/api/parties").then(r=>r.json()).then(j=>{
+  for (const [role,key] of [["buyer","EBuyer"],["seller","ESeller"],["arbiter","EArbiter"]])
+    $(`pid-${role}`).textContent = j.parties[key];
+}).catch(()=>{});
+
+async function refresh() {
+  let results;
+  try {
+    results = await Promise.all(["buyer","seller","arbiter"].map(role =>
+      fetch(`/api/state?role=${role}`).then(r=>r.json()).then(j=>[role, j.contracts])));
+    $("status").textContent = L.connected; $("status").style.color = "var(--seller)";
+  } catch(e) { $("status").textContent = L.connErr; $("status").style.color = "var(--bad)"; return; }
+
+  // 최신 deal만 표시 (dealId 없는 구세대 계약은 숨김)
+  const dealOf = (c) => c.args.dealId ?? c.args.terms?.dealId ?? null;
+  const allDeals = results.flatMap(([,cs])=>cs.map(dealOf)).filter(Boolean);
+  const CUR = allDeals.sort().at(-1) ?? null;
+  const inDeal = (c) => c.template==="CashToken" ? true : dealOf(c)===CUR;
+  results = results.map(([r,cs])=>[r, cs.filter(inDeal)]);
+
+  // 파생값
+  TOKEN=null; VIDS=[]; VBYQ={};
+  const buyerContracts = results.find(([r])=>r==="buyer")[1];
+  const latest = {}; buyerContracts.filter(c=>c.template==="QuarterVerdict").forEach(v=>{ latest[v.args.quarter]=v; });
+  VIDS = Object.values(latest).map(v=>v.contractId); Object.entries(latest).forEach(([q,v])=>VBYQ[q]=v.contractId);
+  const agrC = buyerContracts.find(c=>c.template==="EarnoutAgreement");
+  AGR = agrC ? agrC.contractId : null;
+  const src = agrC ?? buyerContracts.find(c=>c.template==="EarnoutProposal");
+  if (src) TARGET = Number(src.args.terms.quarterlyTarget);
+  const bq = $("bq"); if (bq && agrC) bq.textContent = agrC.args.nextQuarter;
+  const tk = buyerContracts.find(c=>c.template==="CashToken" && c.args.owner.startsWith("EBuyer::"));
+  TOKEN = tk ? tk.contractId : null;
+
+  const dealHtml = dealSummary(buyerContracts);
+  if ($("deal").dataset.html !== dealHtml) { $("deal").innerHTML = dealHtml; $("deal").dataset.html = dealHtml; }
+
+  for (const [role, contracts] of results) {
+    contracts.sort((a,b)=>ORDER.indexOf(a.template)-ORDER.indexOf(b.template)||(a.args.quarter||0)-(b.args.quarter||0));
+    let html = contracts.map(c=>card(c,role)).join("") || EMPTY[role];
+    const dealActive = contracts.some(c=>["EarnoutProposal","EarnoutAgreement","SettlementObligation"].includes(c.template));
+    if (role==="buyer" && !dealActive)
+      html += `<div class="row"><button style="--c:var(--buyer)" onclick="act('propose',{metricName:'Quarterly Operating Net Cash Flow',quarterlyTarget:'80000000.0',totalQuarters:4,requiredMet:3,trancheAmount:'400000000.0'})">${L.proposeBtn}</button></div>`;
+    const pane = $(`p-${role}`);
+    if (pane.contains(document.activeElement) && /INPUT|SELECT/.test(document.activeElement.tagName)) continue;
+    if (pane.dataset.html !== html) { pane.innerHTML = html; pane.dataset.html = html; }
+  }
+}
+refresh(); setInterval(refresh, 2500);
+</script>
+</body>
+</html>

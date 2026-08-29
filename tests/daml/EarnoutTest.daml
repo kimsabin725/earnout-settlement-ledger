@@ -1,0 +1,102 @@
+-- Earnout demo scenario — templates 패키지와 분리된 테스트 전용 패키지
+module EarnoutTest where
+
+import Daml.Script
+import Earnout
+
+demo : Script ()
+demo = script do
+  buyer   <- allocatePartyByHint (PartyIdHint "Buyer")
+  seller  <- allocatePartyByHint (PartyIdHint "Seller")
+  arbiter <- allocatePartyByHint (PartyIdHint "Arbiter")
+  bank    <- allocatePartyByHint (PartyIdHint "Bank")
+
+  let terms = EarnoutTerms with
+        dealId = "DEAL-TEST-1"
+        metricName = "Quarterly Operating Net Cash Flow"
+        quarterlyTarget = 80_000_000.0
+        totalQuarters = 4
+        requiredMet = 3
+        trancheAmount = 400_000_000.0
+
+  -- 은행이 분기 지표를 서명·발행하는 헬퍼
+  let attest q mv oo = submit bank do
+        createCmd MetricAttestation with
+          dealId = "DEAL-TEST-1"; attestor = bank; buyer; quarter = q
+          metricValue = mv; oneOffOutflows = oo
+          basisHash = "sha256:acct-snapshot-q" <> show q
+
+  -- 0) 계약: 제안 → 수락으로 조건·attestor 고정
+  prop <- submit buyer do
+    createCmd EarnoutProposal with buyer; seller; arbiter; attestor = bank; terms
+  agr <- submit seller do exerciseCmd prop Accept
+
+  -- 0-1) [데이터 위조] buyer가 attestation을 스스로 만들려 시도 → 은행 서명 부재로 거부
+  submitMustFail buyer do
+    createCmd MetricAttestation with
+      dealId = "DEAL-TEST-1"; attestor = bank; buyer; quarter = 1
+      metricValue = 99_000_000.0; oneOffOutflows = 0.0; basisHash = "sha256:self-attested"
+
+  -- 1) Q1: 은행 서명 92.0M → 제출 → 충족
+  a1 <- attest 1 92_000_000.0 0.0
+  (agr1, v1) <- submit buyer do
+    exerciseCmd agr SubmitQuarter with attestationCid = a1
+
+  -- 1-1) [재사용 공격] 소비된 attestation으로 재제출 → 거부
+  submitMustFail buyer do
+    exerciseCmd agr1 SubmitQuarter with attestationCid = a1
+
+  -- 1-2) [순서 위반] Q3 attestation을 미리 받아 제출 → 거부 (다음은 Q2)
+  a3early <- attest 3 99_000_000.0 0.0
+  submitMustFail buyer do
+    exerciseCmd agr1 SubmitQuarter with attestationCid = a3early
+
+  -- 2) Q2: 86.0M → 충족
+  a2 <- attest 2 86_000_000.0 0.0
+  (agr2, v2) <- submit buyer do
+    exerciseCmd agr1 SubmitQuarter with attestationCid = a2
+
+  -- 3) Q3: 51.0M 미충족 — 일회성 출금 30.0M 제외 시 81.0M → 플래그
+  a3 <- attest 3 51_000_000.0 30_000_000.0
+  (agr3, v3) <- submit buyer do
+    exerciseCmd agr2 SubmitQuarter with attestationCid = a3
+
+  -- 3-1) seller 이의 → arbiter가 일회성 출금 제외 판정 (충족으로 정정)
+  disp <- submit seller do exerciseCmd v3 RaiseDispute
+  v3' <- submit arbiter do
+    exerciseCmd disp Resolve with
+      verdictCid = v3; resolvedMet = True
+      reasoning = "one-off consulting fee excluded per SPA definition of operating outflow"
+
+  -- 4) Q4: 79.0M → 미충족 (플래그 없음, 정상 미달)
+  a4 <- attest 4 79_000_000.0 0.0
+  (agr4, v4) <- submit buyer do
+    exerciseCmd agr3 SubmitQuarter with attestationCid = a4
+
+  -- 5) [판정 위조] buyer 단독 verdict 생성 → seller 서명 부재로 거부
+  submitMustFail buyer do
+    createCmd QuarterVerdict with
+      dealId = "DEAL-TEST-1"
+      buyer; seller; arbiter; quarter = 4
+      metricValue = 99_000_000.0; oneOffOutflows = 0.0; basisHash = "sha256:forged"
+      met = True; flagged = False; resolution = None
+
+  -- 5-2) [반복제출 공격] 같은 충족 verdict 4개로 Finalize → 분기 중복 검사로 거부
+  submitMustFail seller do
+    exerciseCmd agr4 Finalize with verdictCids = [v1, v1, v1, v1]
+
+  -- 6) 확정: 3/4 충족 (Q1, Q2, Q3-중재정정) → 지급의무 생성
+  result <- submit seller do
+    exerciseCmd agr4 Finalize with verdictCids = [v1, v2, v3', v4]
+  obligation <- case result of
+    Right o -> pure o
+    Left _  -> abort "expected settlement obligation"
+
+  -- 7) 지급: 토큰 이전 + 종결이 한 트랜잭션 (atomic)
+  cash <- submit bank do
+    createCmd CashToken with issuer = bank; owner = buyer
+                             amount = 400_000_000.0
+  (paid, closed) <- submit buyer do
+    exerciseCmd obligation Settle with tokenCid = cash
+
+  pure ()

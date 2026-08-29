@@ -1,0 +1,240 @@
+-- Earnout Settlement Ledger — core state machine
+-- 조건·판정로직을 계약 시점에 양측 서명으로 고정하고,
+-- 분기 판정 → 이의 → 중재 → 지급을 하나의 원장에서 처리한다.
+module Earnout where
+
+import DA.Foldable (forA_)
+import DA.List (sort)
+import DA.Optional (isSome)
+
+-- ---------------------------------------------------------------------------
+-- 지급 leg용 최소 토큰 (MVP: mock. stretch: Canton Coin/생태계 자산으로 교체)
+-- ---------------------------------------------------------------------------
+template CashToken
+  with
+    issuer : Party
+    owner  : Party
+    amount : Decimal
+  where
+    ensure amount > 0.0
+    signatory issuer
+    observer owner
+    choice Transfer : ContractId CashToken
+      with newOwner : Party
+      controller owner
+      do create this with owner = newOwner
+
+-- ---------------------------------------------------------------------------
+-- 0. 지표 데이터 출처 — 지정계좌 스냅샷에 대한 제3자(은행·회계법인) 서명
+--    Buyer는 이 attestation 없이는 분기 지표를 제출할 수 없다 (oracle 경계의 명시)
+-- ---------------------------------------------------------------------------
+template MetricAttestation
+  with
+    dealId         : Text
+    attestor       : Party    -- 서명 주체 (계약 시점에 지정)
+    buyer          : Party
+    quarter        : Int
+    metricValue    : Decimal
+    oneOffOutflows : Decimal
+    basisHash      : Text     -- 지정계좌 거래내역 스냅샷 해시
+  where
+    ensure metricValue >= 0.0 && oneOffOutflows >= 0.0
+    signatory attestor
+    observer buyer
+    -- 단일 사용: SubmitQuarter가 소비 → 같은 서명 데이터 재사용 불가
+    choice Use : ()
+      controller buyer
+      do pure ()
+
+-- ---------------------------------------------------------------------------
+-- 1. 제안 → 수락 (조건 고정)
+-- ---------------------------------------------------------------------------
+data EarnoutTerms = EarnoutTerms
+  with
+    dealId          : Text     -- 거래 식별자 — 판정·분쟁·지급 계약이 이 값을 승계해 세대를 격리한다
+    metricName      : Text     -- 예: "영업 순현금흐름 (분기)"
+    quarterlyTarget : Decimal  -- 분기 목표치
+    totalQuarters   : Int      -- 판정 횟수 (4)
+    requiredMet     : Int      -- 충족 요구 분기 수 (3)
+    trancheAmount   : Decimal  -- 언아웃 잔금
+  deriving (Eq, Show)
+
+template EarnoutProposal
+  with
+    buyer    : Party
+    seller   : Party
+    arbiter  : Party
+    attestor : Party  -- 지표 데이터 출처 — 계약 시점에 함께 고정
+    terms    : EarnoutTerms
+  where
+    signatory buyer
+    observer seller, arbiter
+    choice Accept : ContractId EarnoutAgreement
+      controller seller
+      do create EarnoutAgreement with buyer; seller; arbiter; attestor; terms; nextQuarter = 1
+
+-- 조건 변경 choice는 존재하지 않는다 — 사후 변경 불가가 모델 수준에서 보장됨
+template EarnoutAgreement
+  with
+    buyer       : Party
+    seller      : Party
+    arbiter     : Party
+    attestor    : Party
+    terms       : EarnoutTerms
+    nextQuarter : Int  -- 다음에 제출해야 할 분기 — 순서·1회성 강제
+  where
+    signatory buyer, seller
+    observer arbiter
+
+    -- 분기 판정: buyer는 지정 attestor가 서명한 attestation으로만 제출할 수 있다.
+    -- verdict는 양측 서명 계약 → buyer 단독 위조 불가.
+    -- consuming: agreement가 nextQuarter를 올려 재생성 → 분기당 1회·순서 강제
+    choice SubmitQuarter : (ContractId EarnoutAgreement, ContractId QuarterVerdict)
+      with attestationCid : ContractId MetricAttestation
+      controller buyer
+      do
+        att <- fetch attestationCid
+        assertMsg "attestation must be signed by the designated attestor"
+          (att.attestor == attestor)
+        assertMsg "attestation is for a different deal or buyer"
+          (att.dealId == terms.dealId && att.buyer == buyer)
+        assertMsg "quarters must be reported in order, once each"
+          (att.quarter == nextQuarter && att.quarter <= terms.totalQuarters)
+        exercise attestationCid Use  -- 단일 사용 소비
+        let met = att.metricValue >= terms.quarterlyTarget
+            -- 일회성 출금을 제외하면 목표를 넘는 경우: 실적 억압 의심 플래그
+            flagged = not met && (att.metricValue + att.oneOffOutflows >= terms.quarterlyTarget)
+        v <- create QuarterVerdict with
+          dealId = terms.dealId
+          buyer; seller; arbiter; quarter = att.quarter
+          metricValue = att.metricValue; oneOffOutflows = att.oneOffOutflows
+          basisHash = att.basisHash
+          met; flagged; resolution = None
+        a <- create this with nextQuarter = nextQuarter + 1
+        pure (a, v)
+
+    -- 4분기 종료 후 확정: 충족 분기 수를 세어 지급의무를 생성한다.
+    choice Finalize : Either (ContractId EarnoutClosed) (ContractId SettlementObligation)
+      with verdictCids : [ContractId QuarterVerdict]
+      controller seller
+      do
+        assertMsg "all quarters must be reported before finalize"
+          (nextQuarter > terms.totalQuarters)
+        verdicts <- forA verdictCids fetch
+        assertMsg "verdict count must equal total quarters"
+          (length verdicts == terms.totalQuarters)
+        -- 이 계약의 verdict인지 + 분기 중복 없는지 검사
+        -- (동일 충족 verdict를 반복 제출해 판정을 부풀리는 공격 차단)
+        forA_ verdicts \v ->
+          assertMsg "verdict does not belong to this agreement"
+            (v.dealId == terms.dealId && v.buyer == buyer && v.seller == seller)
+        let quarters = map (.quarter) verdicts
+        assertMsg "duplicate or missing quarters"
+          (sort quarters == [1 .. terms.totalQuarters])
+        let metCount = length [v | v <- verdicts, effectiveMet v]
+        if metCount >= terms.requiredMet
+          then Right <$> create SettlementObligation with
+                 dealId = terms.dealId
+                 buyer; seller; amount = terms.trancheAmount
+          else Left <$> create EarnoutClosed with
+                 dealId = terms.dealId
+                 buyer; seller; outcome = "NOT_MET (" <> show metCount <> "/"
+                   <> show terms.totalQuarters <> " quarters)"
+
+-- 중재 결과가 있으면 그것이 우선한다
+effectiveMet : QuarterVerdict -> Bool
+effectiveMet v = case v.resolution of
+  Some r -> r
+  None   -> v.met
+
+-- ---------------------------------------------------------------------------
+-- 2. 분기 판정 기록 (양측 서명 → 위조·재해석 불가)
+-- ---------------------------------------------------------------------------
+template QuarterVerdict
+  with
+    dealId      : Text
+    buyer       : Party
+    seller      : Party
+    arbiter     : Party
+    quarter     : Int
+    metricValue : Decimal
+    oneOffOutflows : Decimal
+    basisHash   : Text
+    met         : Bool
+    flagged     : Bool          -- 실적 억압 의심
+    resolution  : Optional Bool -- 중재 결과 (있으면 met보다 우선)
+  where
+    signatory buyer, seller
+    observer arbiter
+
+    -- 플래그된 판정에 대해 seller가 이의 제기 (verdict는 유지, 중재로만 정정)
+    nonconsuming choice RaiseDispute : ContractId Dispute
+      controller seller
+      do
+        assertMsg "only flagged verdicts can be disputed" flagged
+        assertMsg "already resolved" (not (isSome resolution))
+        create Dispute with dealId; buyer; seller; arbiter; verdictQuarter = quarter
+                            verdictValue = metricValue; verdictBasis = basisHash
+
+    -- 중재인 판정 반영 (Dispute의 Resolve에서만 호출됨)
+    choice ApplyResolution : ContractId QuarterVerdict
+      with resolvedMet : Bool
+      controller arbiter
+      do create this with resolution = Some resolvedMet
+
+-- ---------------------------------------------------------------------------
+-- 3. 분쟁 → 중재 (분쟁 시에만 arbiter가 원시 근거 접근)
+-- ---------------------------------------------------------------------------
+template Dispute
+  with
+    dealId        : Text
+    buyer         : Party
+    seller        : Party
+    arbiter       : Party
+    verdictQuarter : Int
+    verdictValue  : Decimal
+    verdictBasis  : Text
+  where
+    signatory buyer, seller
+    observer arbiter
+    choice Resolve : ContractId QuarterVerdict
+      with
+        verdictCid  : ContractId QuarterVerdict
+        resolvedMet : Bool
+        reasoning   : Text
+      controller arbiter
+      do exercise verdictCid ApplyResolution with resolvedMet
+
+-- ---------------------------------------------------------------------------
+-- 4. 지급의무 → 토큰 지급 + 종결 (atomic)
+-- ---------------------------------------------------------------------------
+template SettlementObligation
+  with
+    dealId : Text
+    buyer  : Party
+    seller : Party
+    amount : Decimal
+  where
+    signatory buyer, seller
+    -- 지급과 종결이 한 트랜잭션: 토큰 이전 + 의무 소멸 + Closed 생성
+    choice Settle : (ContractId CashToken, ContractId EarnoutClosed)
+      with tokenCid : ContractId CashToken
+      controller buyer
+      do
+        token <- fetch tokenCid
+        assertMsg "insufficient token amount" (token.amount >= amount)
+        assertMsg "token not owned by buyer" (token.owner == buyer)
+        paid   <- exercise tokenCid Transfer with newOwner = seller
+        closed <- create EarnoutClosed with
+          dealId
+          buyer; seller; outcome = "SETTLED " <> show amount
+        pure (paid, closed)
+
+template EarnoutClosed
+  with
+    dealId  : Text
+    buyer   : Party
+    seller  : Party
+    outcome : Text
+  where
+    signatory buyer, seller
