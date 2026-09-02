@@ -184,7 +184,7 @@ const L = LOCALES[LANG];
 const M = L.fmt;
 document.querySelectorAll("[data-t]").forEach(el => { el.innerHTML = L[el.dataset.t]; });
 
-const log = (m, cls) => { const d = $("log"); d.innerHTML += `<div class="${cls||""}">${new Date().toLocaleTimeString()} ${m}</div>`; d.scrollTop = 1e9; };
+const log = (m, cls) => { const d = $("log"); d.innerHTML += `<div class="${cls||""}">${new Date().toLocaleTimeString(LANG === "en" ? "en-GB" : "ko-KR")} ${m}</div>`; d.scrollTop = 1e9; };
 
 async function act(name, body) {
   try {
