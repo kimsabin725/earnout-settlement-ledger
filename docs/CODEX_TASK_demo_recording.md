@@ -206,3 +206,27 @@ controlled by the buyer. This ledger locks the adjudication logic, the data sour
 signs account snapshots), and the arbiter at signing, so neither side can change them afterward.
 The three panels prove Canton's per-party visibility: each renders only what that party's
 participant node can actually see.
+
+---
+
+## 7. Changelog — read this if you attempted a take before 2026-09-02
+
+**Take 1 failed at Step 9 (`Resolve: MET`) and the report was correct.** The click did not
+produce an `/api/resolve` request. Root cause was a frontend scope bug in `index.html`: the
+Dispute card's inline `onclick` referenced `a.verdictQuarter`, a variable local to the `card()`
+function, which is undefined at click time in the global handler scope — the handler threw
+silently and no request was ever made.
+
+**Fixed** (owner-side, 2026-09-02): the quarter is now interpolated at render time, so the
+handler is emitted as `VBYQ['3']` instead of `VBYQ[a.verdictQuarter]`. Verified by rendering
+`card()` directly and asserting the emitted handler contains no local-scope references.
+
+Also fixed earlier the same day: the `/api/forge` route was missing the `dealId` and
+`oneOffOutflows` fields added in model 0.0.6, so Step 11 was failing with a field-validation
+error rather than the intended authorization error.
+
+**What this means for you:** the ledger has been reset and the backend restarted with both
+fixes. Re-run the full sequence from Step 1. Steps 1–8 behaved correctly in take 1, so expect
+them to pass again; Step 9 onward is now unverified-by-UI territory — if anything else fails,
+report it the same way you reported this one. That report was exactly right and saved a broken
+demo from being recorded.
