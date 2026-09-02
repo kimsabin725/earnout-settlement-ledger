@@ -112,8 +112,8 @@ const routes = {
   "POST /api/settle": async (_q, b) => submit([roleParty("buyer")], [{ ExerciseCommand: { templateId: `${TPL}:SettlementObligation`, contractId: b.obligationId, choice: "Settle", choiceArgument: { tokenCid: b.tokenId } } }], "settle"),
   // 위조 데모: buyer 단독 verdict 생성 시도 — 반드시 실패해야 정상
   "POST /api/forge": async () => submit([roleParty("buyer")], [{ CreateCommand: { templateId: `${TPL}:QuarterVerdict`, createArguments: {
-    buyer: roleParty("buyer"), seller: roleParty("seller"), arbiter: roleParty("arbiter"), quarter: "4",
-    metricValue: "99000000.0", basisHash: "sha256:forged", met: true, flagged: false, resolution: null } } }], "forge"),
+    dealId: "FORGED", buyer: roleParty("buyer"), seller: roleParty("seller"), arbiter: roleParty("arbiter"), quarter: "4",
+    metricValue: "99000000.0", oneOffOutflows: "0.0", basisHash: "sha256:forged", met: true, flagged: false, resolution: null } } }], "forge"),
 };
 
 const server = createServer(async (req, res) => {
