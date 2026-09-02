@@ -230,8 +230,8 @@ function card(c, role) {
     <div class="kv">${L.basisLbl(a.basisHash)}</div>
     ${role==="seller"&&a.flagged&&a.resolution==null?`<button style="--c:var(--seller)" onclick="act('dispute',{contractId:'${id}'})">${L.disputeBtn}</button>`:""}</div>`; }
   if (t === "Dispute") return `<div class="card"><b>${L.disputeT}</b> <span class="kv">${L.disputeKv(a, M)}</span>
-    ${role==="arbiter"?`<button style="--c:var(--arbiter)" onclick="act('resolve',{disputeId:'${id}',verdictId:VBYQ[a.verdictQuarter],resolvedMet:true,reasoning:'one-off excluded per SPA'})">${L.resolveMet}</button>
-    <button class="ghost" onclick="act('resolve',{disputeId:'${id}',verdictId:VBYQ[a.verdictQuarter],resolvedMet:false,reasoning:'upheld'})">${L.resolveUnmet}</button>`:""}</div>`;
+    ${role==="arbiter"?`<button style="--c:var(--arbiter)" onclick="act('resolve',{disputeId:'${id}',verdictId:VBYQ['${a.verdictQuarter}'],resolvedMet:true,reasoning:'one-off excluded per SPA'})">${L.resolveMet}</button>
+    <button class="ghost" onclick="act('resolve',{disputeId:'${id}',verdictId:VBYQ['${a.verdictQuarter}'],resolvedMet:false,reasoning:'upheld'})">${L.resolveUnmet}</button>`:""}</div>`;
   if (t === "SettlementObligation") return `<div class="card"><b>${L.oblT}</b> <span class="kv">${L.oblKv(a, M)}</span>
     ${role==="buyer"?`<button style="--c:var(--buyer)" onclick="act('settle',{obligationId:'${id}',tokenId:TOKEN})" ${TOKEN?"":"disabled"}>${L.settleBtn(!!TOKEN)}</button>`:""}</div>`;
   if (t === "CashToken") return `<div class="card"><b>${L.tokenT}</b> <span class="kv">${L.tokenKv(a, M)}</span></div>`;
