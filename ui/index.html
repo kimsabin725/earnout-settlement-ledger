@@ -62,10 +62,13 @@
 <div class="pane" style="--c:var(--bank); min-height:0; margin-bottom:12px; padding:10px 14px">
   <b style="font-size:12.5px" data-t="bankTitle"></b>
   <span style="font-size:11px;color:var(--dim)" data-t="bankDesc"></span>
-  <div class="row">Q<span id="bq" style="font-weight:700">1</span>
-    <span data-t="metricLbl"></span><input id="bmv" value="92000000.0">
-    <span data-t="oneOffLbl"></span><input id="boo" value="0.0">
-    <button style="--c:var(--bank)" onclick="act('attest',{quarter:Number($('bq').textContent),metricValue:$('bmv').value,oneOffOutflows:$('boo').value})" data-t="attestBtn"></button>
+  <div class="row">
+    <span id="bform">Q<span id="bq" style="font-weight:700">1</span>
+      <span data-t="metricLbl"></span><input id="bmv" value="92000000.0">
+      <span data-t="oneOffLbl"></span><input id="boo" value="0.0">
+      <button style="--c:var(--bank)" onclick="act('attest',{quarter:Number($('bq').textContent),metricValue:$('bmv').value,oneOffOutflows:$('boo').value})" data-t="attestBtn"></button>
+    </span>
+    <span id="bdone" style="display:none;color:var(--dim);font-size:12px" data-t="bankDone"></span>
     <button class="ghost" onclick="act('mint',{amount:'400000000.0'})" data-t="mintBtn"></button>
   </div>
 </div>
@@ -100,6 +103,7 @@ ko: {
   bankDesc: " 지정계좌 스냅샷에 서명해 지표를 발행합니다 — Buyer는 은행 서명 데이터로만 제출 가능",
   metricLbl: "지표", oneOffLbl: "일회성",
   attestBtn: "계좌 스냅샷 서명·발행", mintBtn: "CashToken 4억 발행 → Buyer",
+  bankDone: "전 분기 서명 완료 — 더 발행할 지표 없음",
   buyerSub: "인수법인 — 지표 제출·지급", sellerSub: "매도자 — 판정 열람·이의·확정", arbiterSub: "중재인 — 분쟁 시에만 개입",
   buyerVis: "<b>보이는 것</b> 계약·은행 서명 지표·판정·자기 소유 토큰 · <b>안 보이는 것</b> 없음(당사자)",
   sellerVis: "<b>보이는 것</b> 판정 결과·지표값 · <b>안 보이는 것</b> 🔒 Buyer의 원시 거래내역 (해시로만 고정)",
@@ -144,6 +148,7 @@ en: {
   bankDesc: " Signs designated-account snapshots to issue metrics — the Buyer can only submit bank-signed data",
   metricLbl: "Metric", oneOffLbl: "One-offs",
   attestBtn: "Sign & issue account snapshot", mintBtn: "Mint 400M CashToken → Buyer",
+  bankDone: "All quarters signed — no further metrics to issue",
   buyerSub: "Acquirer — submits metrics, pays", sellerSub: "Seller — reviews, disputes, finalizes", arbiterSub: "Arbiter — steps in only on dispute",
   buyerVis: "<b>Sees</b> contract · bank-signed metrics · verdicts · own tokens · <b>Hidden</b> nothing (party to all)",
   sellerVis: "<b>Sees</b> verdicts & metric values · <b>Hidden</b> 🔒 Buyer's raw transactions (hash-committed only)",
@@ -196,7 +201,11 @@ async function act(name, body) {
     log(`✗ ${name} — ${String(e.message).slice(0,180)}`, "err");
     if (name === "forge") {
       const b = $("banner");
-      b.innerHTML = L.forgeBanner(String(e.message).slice(0,140));
+      // 배너에는 기술적 노이즈 대신 핵심 사유(권한 부족)를 뽑아 넣는다
+      const raw = String(e.message);
+      const m = raw.match(/requires authorizers[\s\S]+/);
+      const detail = (m ? m[0] : raw).replace(/([A-Za-z]+)::[0-9a-f]+/g, "$1::\u2026").replace(/\s+/g, " ").slice(0, 200);
+      b.innerHTML = L.forgeBanner(detail);
       b.style.display = "block"; clearTimeout(b._t); b._t = setTimeout(()=>{ b.style.display="none"; }, 9000);
     }
   }
@@ -309,7 +318,16 @@ async function refresh() {
   AGR = agrC ? agrC.contractId : null;
   const src = agrC ?? buyerContracts.find(c=>c.template==="EarnoutProposal");
   if (src) TARGET = Number(src.args.terms.quarterlyTarget);
-  const bq = $("bq"); if (bq && agrC) bq.textContent = agrC.args.nextQuarter;
+  // 은행 스트립 상태: 계약 유무가 아니라 "지표를 더 낼 일이 있는가"로 판단한다.
+  //  - 계약 진행 중이고 남은 분기 있음 → 입력폼 (다음 분기 번호)
+  //  - 전 분기 보고 완료 / Finalize로 계약 소비됨 / 종결됨 → 완료 문구
+  //  - 딜 자체가 없음(새 거래 대기) → 입력폼, Q1부터
+  // Finalize 이후(지급대기·종결)에만 "완료" — Proposal 단계나 딜 없음은 Q1 폼
+  const pastFinalize = buyerContracts.some(c=>["SettlementObligation","EarnoutClosed"].includes(c.template));
+  const moreToSign = agrC ? Number(agrC.args.nextQuarter) <= Number(agrC.args.terms.totalQuarters) : !pastFinalize;
+  $("bq").textContent = agrC ? agrC.args.nextQuarter : "1";
+  $("bform").style.display = moreToSign ? "" : "none";
+  $("bdone").style.display = moreToSign ? "none" : "";
   const tk = buyerContracts.find(c=>c.template==="CashToken" && c.args.owner.startsWith("EBuyer::"));
   TOKEN = tk ? tk.contractId : null;
 
