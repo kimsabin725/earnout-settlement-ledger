@@ -155,11 +155,8 @@ try {
     async () => {
       const banner = page.locator('#banner');
       await banner.waitFor({ state: 'visible', timeout: 30000 });
-      await waitContains('#banner', [
-        'The ledger rejected the forgery',
-        'requires authorizers',
-        'EBuyer::',
-      ]);
+      await waitContains('#banner', 'The ledger rejected the forgery');
+      await waitContains('#log', ['✗ forge', 'requires authorizers', 'EBuyer::']);
       await banner.scrollIntoViewIfNeeded();
     },
     5000,
