@@ -1,4 +1,4 @@
-# Earnout Settlement Ledger — 1-Page Business Brief (draft)
+# Earnout Settlement Ledger — 1-Page Business Brief
 
 **Problem** — Earnouts bridge M&A valuation gaps (24% of private deals) but 28% end in dispute; actual payouts average ~21% of stated potential (SRS Acquiom, 2,300+ deals). Root cause: post-closing metrics are computed by the buyer, on the buyer's books, verified by no one the seller trusts.
 
