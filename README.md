@@ -96,7 +96,16 @@ CashToken; the seller's has no raw basis. That is not UI filtering — it is the
 - **Cash-flow timing.** A buyer can shift payment dates across quarter ends. The 3-of-4 structure preserves totals across quarters and quarter-end bulk payments are flaggable, but this is mitigation, not prevention.
 - **Attribution.** The ledger fixes *numbers*, not *causes* — whether underperformance stems from suppression or a lost customer stays a human question, scoped to the arbiter.
 
-## Status
+## Status and provenance
 
-- Model `0.0.6`, deployed and exercised end-to-end on cn-quickstart LocalNet (JSON Ledger API v2, OAuth2/Keycloak).
-- DevNet deployment planned (validator sponsorship pending).
+**Pre-hackathon foundation (Aug 2026, before Season 3 opened).** Disclosed per the hackathon rules on pre-existing code.
+- Daml model `0.0.6` (4-party workflow, 7 adversarial scenarios rejected by the ledger, all under test).
+- LocalNet end-to-end run on cn-quickstart (JSON Ledger API v2, OAuth2/Keycloak), 3-panel demo UI, 59-second demo recording.
+- Everything up to and including commit `Brief: drop draft marker` belongs to this phase.
+
+**Built during Season 3 (Sep 18 – Oct 9, 2026).** Each item below is tagged `[S3]` in the commit log and in `docs/s3-log.md`.
+- [ ] DevNet deployment on the shared HackCanton node — DAR upload, party provisioning, live transaction IDs.
+- [ ] Per-party users on DevNet (today one validator user acts for all four parties — a demo shortcut). The privacy claim is then verifiable from the API: the seller's token cannot read the buyer's raw submission.
+- [ ] Bank attestation from a statement file (CSV) instead of a typed-in number, so the attestor signs what its own records say.
+- [ ] Validation interviews with earnout practitioners (M&A advisors / escrow agents / search-fund operators) — findings and changes recorded in `docs/validation.md`.
+- [ ] Journal, pitch deck, and pilot brief revisions from the above.
