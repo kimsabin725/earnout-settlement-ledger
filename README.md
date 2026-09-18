@@ -99,7 +99,7 @@ CashToken; the seller's has no raw basis. That is not UI filtering — it is the
 ## Status and provenance
 
 **Pre-hackathon foundation (Aug 2026, before Season 3 opened).** Disclosed per the hackathon rules on pre-existing code.
-- Daml model `0.0.6` (4-party workflow, 7 adversarial scenarios rejected by the ledger, all under test).
+- Daml model `0.0.6` (4-party workflow; 5 adversarial scenarios asserted to fail under `submitMustFail`, plus 2 that the model cannot express at all).
 - LocalNet end-to-end run on cn-quickstart (JSON Ledger API v2, OAuth2/Keycloak), 3-panel demo UI, 59-second demo recording.
 - Everything up to and including commit `Brief: drop draft marker` belongs to this phase.
 
