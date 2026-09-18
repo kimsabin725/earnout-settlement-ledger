@@ -1,8 +1,9 @@
 import { chromium } from 'playwright';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = '/Users/sbk/Projects/hackcanton-s3/app/docs';
+const ROOT = path.dirname(fileURLToPath(import.meta.url)); // app/docs
 const RAW_DIR = path.join(ROOT, 'demo', 'raw');
 const FAILURE_SHOT = path.join(ROOT, 'demo', 'recording-failure.png');
 const TARGET_URL = 'http://localhost:8090?lang=en';

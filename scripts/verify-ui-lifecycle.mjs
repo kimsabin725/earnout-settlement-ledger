@@ -2,7 +2,10 @@
 // 실행: node scripts/verify-ui-lifecycle.mjs  (LocalNet + server.mjs 가동, clean ledger 전제)
 // DOM은 최소 스텁, 페이지 스크립트는 수정 없이 그대로 eval. 검증 후 원장은 더러워지므로 촬영 전엔 리셋 필요.
 import { readFileSync } from "node:fs";
-const html = readFileSync("/Users/sbk/Projects/hackcanton-s3/app/ui/index.html", "utf8");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const APP = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const html = readFileSync(path.join(APP, "ui", "index.html"), "utf8");
 const script = html.slice(html.indexOf("<script>") + 8, html.lastIndexOf("</script>"));
 
 // ---- DOM 스텁 ----
