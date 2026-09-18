@@ -1,0 +1,32 @@
+{
+  "id": "CaseFortisAuris",
+  "label": "Fortis Advisors v. Johnson & Johnson (Auris Health) — ten milestones, none of them a number",
+  "provenance": "PUBLIC RECORD. Fortis Advisors LLC v. Johnson & Johnson / Ethicon (Del. Ch.; trial Jan 2024, liability Sep 2024, stipulated judgment of approximately $811 million on Jan 26, 2026; aff'd in part, Johnson & Johnson v. Fortis Advisors LLC, No. 490,2024 (Del. 2026)). Reported structure: $3.4 billion paid at closing plus up to $2.35 billion in earnout contingent on two commercial and eight regulatory milestones, none of which was paid; one named milestone was $100 million on FDA 510(k) clearance for Monarch lung tissue ablation.",
+  "simplifications": [
+    "Only the named $100 million milestone is expressed here. The other nine are not individually quantified in the summaries used."
+  ],
+  "deal": {
+    "dealId": "REPLAY-FORTIS-AURIS",
+    "metricName": "FDA 510(k) clearance for Monarch lung tissue ablation"
+  },
+  "terms": {
+    "periodBasis": "per-period",
+    "trigger": "event",
+    "eventDescription": "regulatory clearance, and nine further commercial and regulatory milestones",
+    "metricTarget": null,
+    "periods": 1,
+    "payout": {
+      "type": "all-or-nothing",
+      "thresholdType": "count-of-periods-met",
+      "requiredPeriodsMet": 1,
+      "amount": 100000000
+    }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": null, "oneOffOutflows": 0 }
+  ],
+  "settled": {
+    "payout": 0,
+    "note": "No earnout was paid. The approximately $811 million judgment is damages for breach and fraud, not an earnout payment, and is not what this harness asserts."
+  }
+}

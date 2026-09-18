@@ -31,14 +31,16 @@ Goal: evidence for the judging dimension "Validation" (user research / early tes
 Before asking practitioners for their own clauses, I ran the replay harness (`replay/`) against
 earnout clauses that are already public — Delaware opinions, where the clause language and
 sometimes the figures are on the record. The point was to find out what a real clause looks like
-before assuming my signed terms can hold one. Three clauses, and the result is not flattering,
-which is why it is written down here.
+before assuming my signed terms can hold one. Five clauses, one fits, and that result is not
+flattering, which is why it is written down here.
 
 | Clause | Source | Result |
 |---|---|---|
 | Prosser v. PharmaLogic Holdings | C.A. No. N25C-08-284 MAA CCLD (Del. Super. CCLD, Jul 7, 2026) | **Compiles and replays on the ledger to the payout that was actually made ($0).** |
 | Lazard Tech. Partners v. QinetiQ (Cyveillance) | No. 464,2014 (Del. Apr 23, 2015) | Not expressible — "up to $40 million" is a tiered payout. The threshold and the actual revenues are not in the opinion either. |
 | Winshall v. Viacom (Harmonix) | Del. Ch. 2011, aff'd Del. 2013 | Not expressible — 3.5x the excess over a threshold that rises between periods, uncapped. The opinion discloses neither year's Gross Profit nor what was paid. |
+| Fortis Advisors v. Johnson & Johnson (Auris Health) | Del. Ch. 2024–26; aff'd in part No. 490,2024 (Del. 2026) | Not expressible — ten commercial and regulatory milestones. The trigger is an event, not a figure. |
+| In re SwervePay Acquisition | Del. Ch., Jul 31, 2026 | Not expressible — "up to $53.75m" pro-rated against a payment-volume baseline, across two revenue definitions. |
 
 ## What this changes
 
@@ -65,13 +67,29 @@ anyway. Fixing the forum at signing is necessary and was not sufficient, because
 was drawn around arithmetic and the fight was about conduct. My arbiter role has the same shape
 and therefore the same hole.
 
-**4. Two of three public clauses cannot be expressed at all.** Tiered, interpolated, formula and
+**4. Four of five public clauses cannot be expressed at all.** Tiered, interpolated, formula and
 period-varying targets are the norm in the record, not the exception, and the harness refuses them
 by design rather than approximating them. That is the honest state of the premise: the
 all-or-nothing, count-of-periods form is a real structure — PharmaLogic's tier is exactly it — but
 it is one shape among several, and a product that only serves that shape serves a slice of the
 market. Extending the signed terms to a tiered payout is the obvious next design question, and it
 has to be a signed computation, not an amendment.
+
+**5. Milestones are a different product, not a wider target.** Auris's earnout hung on two
+commercial and eight regulatory milestones — one of them $100m on an FDA 510(k) clearance. There
+is no number to compare to a threshold. `MetricAttestation` carries a figure signed by a bank;
+a milestone needs a party who signs that an event occurred, and whoever that is (a regulator's
+public register, a named expert) is not a bank and does not attest cash. The refusal here is
+honest and also a warning: half the earnout market by value is life-sciences milestones, and
+serving it is a second attestation template, not a bigger `Decimal`.
+
+**6. SwervePay is the case this product cannot help with, and I would rather say so first.** The
+fight there was not about the post-closing computation. The buyers represented roughly $34bn of
+payment volume as the baseline the earnout would convert; the actual volume was about $5.2bn. A
+ledger that locks the rules at signing locks in a baseline that was already wrong at signing. The
+court reached it as fraud and awarded $75,692,297. Nothing in my design prevents a party from
+signing terms built on a misrepresented input — it prevents changing the rules afterwards. Fixing
+the pre-signing fact is diligence, not settlement infrastructure.
 
 This was pre-registered: the plan said a clause that does not compile gets published with the
 reason instead of the model being quietly widened until it fits. Two did not compile. Here they are.
