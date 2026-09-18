@@ -43,7 +43,7 @@ Responsibility is deliberately **decomposed**: facts → attestor, rules → con
 2. **A central database has no home.** The buyer's system? The seller won't trust it (that *is* the problem). The seller's? Symmetric. An escrow agent holds money but does not adjudicate. The product is precisely *a record neither side can own or amend*.
 3. **Adjudication and payment settle atomically.** Verdict finalization creates a payment obligation; `Settle` transfers the token and closes the contract in a single transaction — no "judgment won, payment stalled" gap.
 
-## Adversarial properties (all ledger-enforced, all tested)
+## Adversarial properties (all ledger-enforced — five asserted by tests, two unrepresentable)
 
 | Attack | Result |
 |---|---|
@@ -106,6 +106,7 @@ CashToken; the seller's has no raw basis. That is not UI filtering — it is the
 **Built during Season 3 (Sep 18 – Oct 9, 2026).** Each item below is tagged `[S3]` in the commit log and in `docs/s3-log.md`.
 - [ ] DevNet deployment on the shared HackCanton node — DAR upload, party provisioning, live transaction IDs.
 - [ ] Per-party users on DevNet (today one validator user acts for all four parties — a demo shortcut). The privacy claim is then verifiable from the API: the seller's token cannot read the buyer's raw submission.
+- [ ] The clause replay harness — turning a written earnout clause into a metric definition the contract can evaluate. This is what makes the success metric in the deck testable.
 - [ ] Bank attestation from a statement file (CSV) instead of a typed-in number, so the attestor signs what its own records say.
 - [ ] Validation interviews with earnout practitioners (M&A advisors / escrow agents / search-fund operators) — findings and changes recorded in `docs/validation.md`.
 - [ ] Journal, pitch deck, and pilot brief revisions from the above.
