@@ -23,3 +23,55 @@ Goal: evidence for the judging dimension "Validation" (user research / early tes
 
 ## Findings
 (Fill after each call: date · role · 3 quotes · what we changed because of it.)
+
+---
+
+# Public-record replays (Sep 18, 2026)
+
+Before asking practitioners for their own clauses, I ran the replay harness (`replay/`) against
+earnout clauses that are already public — Delaware opinions, where the clause language and
+sometimes the figures are on the record. The point was to find out what a real clause looks like
+before assuming my signed terms can hold one. Three clauses, and the result is not flattering,
+which is why it is written down here.
+
+| Clause | Source | Result |
+|---|---|---|
+| Prosser v. PharmaLogic Holdings | C.A. No. N25C-08-284 MAA CCLD (Del. Super. CCLD, Jul 7, 2026) | **Compiles and replays on the ledger to the payout that was actually made ($0).** |
+| Lazard Tech. Partners v. QinetiQ (Cyveillance) | No. 464,2014 (Del. Apr 23, 2015) | Not expressible — "up to $40 million" is a tiered payout. The threshold and the actual revenues are not in the opinion either. |
+| Winshall v. Viacom (Harmonix) | Del. Ch. 2011, aff'd Del. 2013 | Not expressible — 3.5x the excess over a threshold that rises between periods, uncapped. The opinion discloses neither year's Gross Profit nor what was paid. |
+
+## What this changes
+
+**1. One real clause does replay, and it is the interesting kind.** PharmaLogic's earnout paid
+$6.6m if earnout-period EBITDA reached $7,000,000. The buyer's earnout statement reported
+$6,800,000 — $200,000 short — and nothing was paid. Expressed in the signed terms, the ledger
+reaches the same $0. That is the first end-to-end reproduction of a real earnout outcome on this
+model, and it took one clause file.
+
+**2. The flag would not have fired, and that is a real limitation.** The sellers allege the buyer
+depressed the figure with higher bad debt, a new 401(k) match, sales bonuses and "more than
+$170,000 in additional expenses from switching to a new supplier". Only that last item is
+quantified in the public record. $6,800,000 + $170,000 is still below $7,000,000, so the contract's
+suppression flag stays silent on the one number anyone has published. The other allegations are
+about *new expense categories appearing after closing*, which the model has no way to see: it
+evaluates the attested figure, and a buyer who books a new charge inside the definition produces
+an honest attestation of a manipulated number. The bank attests the cash, not the accounting
+policy.
+
+**3. The court said the auditor could not fix it, which is the product thesis and its boundary at
+once.** The agreement did send disputes to an independent auditor, but its role was "limited to
+disputes over the 'amounts'", so when the sellers alleged improper intent the claim went to court
+anyway. Fixing the forum at signing is necessary and was not sufficient, because the forum's scope
+was drawn around arithmetic and the fight was about conduct. My arbiter role has the same shape
+and therefore the same hole.
+
+**4. Two of three public clauses cannot be expressed at all.** Tiered, interpolated, formula and
+period-varying targets are the norm in the record, not the exception, and the harness refuses them
+by design rather than approximating them. That is the honest state of the premise: the
+all-or-nothing, count-of-periods form is a real structure — PharmaLogic's tier is exactly it — but
+it is one shape among several, and a product that only serves that shape serves a slice of the
+market. Extending the signed terms to a tiered payout is the obvious next design question, and it
+has to be a signed computation, not an amendment.
+
+This was pre-registered: the plan said a clause that does not compile gets published with the
+reason instead of the model being quietly widened until it fits. Two did not compile. Here they are.
