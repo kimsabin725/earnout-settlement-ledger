@@ -60,9 +60,11 @@ Copy `clauses/template.json`. The fields that matter:
 | `case-prosser-pharmalogic.json` | Public record. Compiles, and replays to the payout that was actually made ($0). |
 | `case-lazard-qinetiq.json` | Public record. Not expressible — a tiered "up to $40m" payout, with the threshold missing from the opinion. |
 | `case-winshall-viacom.json` | Public record. Not expressible — 3.5x the excess over a threshold that rises between periods. |
+| `case-fortis-auris.json` | Public record. Not expressible — the trigger is a regulatory event, not a figure. |
+| `case-swervepay.json` | Public record. Not expressible — a pro-rated "up to" amount across two revenue definitions. |
 | `template.json` | For a practitioner's clause. |
 
-One clause from the public record replays end to end; two others are refused with the reason.
+One clause from the public record replays end to end; four others are refused with the reason.
 `docs/validation.md` records what that told us, including the part that does not flatter the
 model. **No clause from a practitioner has been through it yet** — collecting those is the open
 work, and it is the part that decides whether the premise holds.

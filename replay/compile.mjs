@@ -34,6 +34,8 @@ function check(clause) {
     reasons.push(`payout type "${p.type}" — the tranche is all-or-nothing. Tiered, sliding, interpolated and formula payouts — the common shapes in the public record — are different computations and would have to be signed as such.`);
   if (p.type === 'all-or-nothing' && !SUPPORTED.thresholdType.includes(p.thresholdType ?? 'count-of-periods-met'))
     reasons.push(`threshold type "${p.thresholdType}" — the only threshold the contract counts is how many periods were met.`);
+  if (t.trigger === 'event')
+    reasons.push(`the trigger is an event (${t.eventDescription ?? 'a milestone'}), not a metric value. The contract compares a number to a target; an event needs a party who signs that the event happened, and the model has no template for that — MetricAttestation carries a figure, not a fact.`);
   if (Array.isArray(t.metrics) && t.metrics.length > 1)
     reasons.push(`${t.metrics.length} metrics — one metric per agreement. Two metrics means two agreements, or a metric defined as a formula before it reaches the ledger.`);
   if (t.caps || t.floors)

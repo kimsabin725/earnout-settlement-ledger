@@ -1,0 +1,28 @@
+{
+  "id": "CaseSwervePay",
+  "label": "In re SwervePay Acquisition — 'up to $53.75 million' against a payment-volume baseline that was itself contested",
+  "provenance": "PUBLIC RECORD. In re SwervePay Acquisition, LLC (Del. Ch., July 31, 2026). Per Holland & Knight's summary of the opinion: sellers received 'approximately $9.9 million in cash and an additional $10 million in rollover equity at closing', with contingent consideration of 'up to $53.75 million tied to the Target's ability to convert the Platform's existing payments volume onto its own systems during the 2021 earnout period', hinging on 'a single, contested metric: the volume of payments actually flowing through the Platform's systems' — represented as $34 billion, actually about $5.2 billion. Award: $75,692,297 on fraud. Other summaries split the contingent consideration into two milestones ($43.75m and $25m) and larger equity figures; the discrepancy is left unresolved here rather than picked, because it does not change the outcome below.",
+  "deal": {
+    "dealId": "REPLAY-SWERVEPAY",
+    "metricName": "Net payments revenue from converted payment volume (2021)"
+  },
+  "terms": {
+    "periodBasis": "per-period",
+    "metricTarget": null,
+    "periods": 1,
+    "metrics": ["revenue from existing converted volume", "revenue from new volume"],
+    "payout": {
+      "type": "sliding",
+      "thresholdType": "percentage-of-target",
+      "requiredPeriodsMet": 1,
+      "amount": 53750000
+    }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": null, "oneOffOutflows": 0 }
+  ],
+  "settled": {
+    "payout": 0,
+    "note": "No earnout was paid. The $75,692,297 award is fraud damages, not an earnout payment."
+  }
+}
