@@ -6,7 +6,7 @@ Built for HackCanton Season 3 (RWA & Business Workflows track).
 
 ## The problem
 
-- **24%** of private M&A deals use earnouts (deferred payments tied to post-closing performance) — and **28% of them end in dispute** (SRS Acquiom 2026 Deal Terms Study, 2,300+ deals). Earnouts pay out only ~21 cents on the dollar of their stated potential.
+- **24%** of private M&A deals use earnouts (deferred payments tied to post-closing performance; ABA Private Target Deal Points Study) — and **28% of them end in dispute** (SRS Acquiom). Earnouts pay out only ~21 cents on the dollar of their stated potential (SRS Acquiom, Kroll).
 - The root cause: **post-closing books are controlled by the buyer.** The seller cannot verify the numbers, and in litigation the seller bears the burden of proof over books the buyer keeps.
 - The classic dispute — *"that one-off expense was operationally necessary"* vs. *"you suppressed earnings to avoid the payout"* — is argued years later over records neither side agreed on at the time.
 
