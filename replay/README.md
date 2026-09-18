@@ -61,3 +61,14 @@ Copy `clauses/template.json`. The fields that matter:
 
 All three fixtures are synthetic. **No real clause has been replayed yet** — collecting them is
 the open work, and it is the part that decides whether the premise holds.
+
+## SDK note
+
+The packages pin `sdk-version: 3.5.2` (the Canton 3.x line), which is not installable from
+the public `daml install` channel. `run.sh` therefore falls back to whatever SDK is present
+(`DAML_SDK_VERSION`), and the model compiles either way because it targets LF 2.2.
+
+One consequence worth knowing before a deployment: building with the fallback SDK **rewrites**
+`ledger/.daml/dist/earnout-ledger-0.0.6.dar`, and a DAR built by a different SDK is a
+different package on the ledger. Anything uploaded to DevNet must be built in the pinned
+3.5.2 environment (the cn-quickstart devshell), not by this harness.
