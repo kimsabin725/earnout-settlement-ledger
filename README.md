@@ -110,3 +110,9 @@ CashToken; the seller's has no raw basis. That is not UI filtering — it is the
 - [ ] Bank attestation from a statement file (CSV) instead of a typed-in number, so the attestor signs what its own records say.
 - [ ] Validation interviews with earnout practitioners (M&A advisors / escrow agents / search-fund operators) — findings and changes recorded in `docs/validation.md`.
 - [ ] Journal, pitch deck, and pilot brief revisions from the above.
+
+## License
+
+Apache License 2.0 — see [`LICENSE`](LICENSE). Apache-2.0 rather than MIT because this is ledger
+code with an explicit patent grant, which is what an enterprise counterparty evaluating it would
+expect, and it is the license the Daml and Canton ecosystem itself uses.
