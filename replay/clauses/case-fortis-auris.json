@@ -1,18 +1,18 @@
 {
   "id": "CaseFortisAuris",
-  "label": "Fortis Advisors v. Johnson & Johnson (Auris Health) — ten milestones, none of them a number",
-  "provenance": "PUBLIC RECORD. Fortis Advisors LLC v. Johnson & Johnson / Ethicon (Del. Ch.; trial Jan 2024, liability Sep 2024, stipulated judgment of approximately $811 million on Jan 26, 2026; aff'd in part, Johnson & Johnson v. Fortis Advisors LLC, No. 490,2024 (Del. 2026)). Reported structure: $3.4 billion paid at closing plus up to $2.35 billion in earnout contingent on two commercial and eight regulatory milestones, none of which was paid; one named milestone was $100 million on FDA 510(k) clearance for Monarch lung tissue ablation.",
+  "label": "Fortis Advisors v. Johnson & Johnson (Auris Health) — milestones, not a metric",
+  "provenance": "PUBLIC RECORD, and the figures below are the ones two or more sources agree on. J&J/Ethicon's acquisition of Auris Health: up to $2.35 billion in contingent consideration tied to FDA regulatory milestones for the iPlatform and Monarch devices (Arnold & Porter advisory, Mar 2026), none of which was achieved after a change in the FDA's required clearance pathway. One named milestone is a $100 million 'Soft Tissue Ablation Milestone' (same source); an earlier summary describes it as a 510(k) clearance for lung tissue ablation. CAUTION: the litigation history is reported inconsistently across secondary sources — a post-trial Chancery award of more than $1 billion, a stipulated judgment of roughly $811 million in January 2026, and a Delaware Supreme Court decision of January 12, 2026 (No. 490,2024) that reversed the first-milestone ruling and vacated the related damages. This file does not rely on any of those figures; the only facts it uses are the milestone trigger and that no earnout was paid.",
   "simplifications": [
-    "Only the named $100 million milestone is expressed here. The other nine are not individually quantified in the summaries used."
+    "Only the named $100 million milestone is expressed. The remaining milestones are not individually quantified in the sources used, and the total count is reported inconsistently, so no count is asserted here."
   ],
   "deal": {
     "dealId": "REPLAY-FORTIS-AURIS",
-    "metricName": "FDA 510(k) clearance for Monarch lung tissue ablation"
+    "metricName": "Soft Tissue Ablation Milestone (FDA clearance)"
   },
   "terms": {
     "periodBasis": "per-period",
     "trigger": "event",
-    "eventDescription": "regulatory clearance, and nine further commercial and regulatory milestones",
+    "eventDescription": "FDA regulatory clearance, one of several milestones whose total count the sources report inconsistently",
     "metricTarget": null,
     "periods": 1,
     "payout": {
@@ -23,10 +23,14 @@
     }
   },
   "schedule": [
-    { "period": 1, "metricValue": null, "oneOffOutflows": 0 }
+    {
+      "period": 1,
+      "metricValue": null,
+      "oneOffOutflows": 0
+    }
   ],
   "settled": {
     "payout": 0,
-    "note": "No earnout was paid. The approximately $811 million judgment is damages for breach and fraud, not an earnout payment, and is not what this harness asserts."
+    "note": "No earnout was paid: the milestones were not achieved. The damages awarded in the litigation are not an earnout payment, were adjusted on appeal, and are not what this harness asserts."
   }
 }
