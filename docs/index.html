@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Earnout Settlement Ledger — Demo</title>
+<style>
+ :root{--ink:#0E1A2B;--body:#2A3B52;--mute:#6B7C93;--rule:#DFE5EC;--accent:#1B4D8F;--panel:#F5F7FA;--bg:#fff}
+ @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#EAF0F7;--body:#C2CFDE;--mute:#8A9BB0;--rule:#243347;--accent:#6FA8E0;--panel:#14202F;--bg:#0B131D}}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--body);font:16px/1.6 -apple-system,"SF Pro Text","Helvetica Neue",Arial,sans-serif;padding:40px 16px 64px}
+ .w{max-width:960px;margin:0 auto}
+ .kick{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+ h1{font-size:34px;line-height:1.15;color:var(--ink);letter-spacing:-.02em;margin:10px 0 12px}
+ p.lede{font-size:18px;max-width:46em}
+ video{width:100%;margin:28px 0 8px;border:1px solid var(--rule);background:#000;border-radius:4px}
+ .cap{font-size:13px;color:var(--mute)}
+ h2{font-size:19px;color:var(--ink);margin:30px 0 10px}
+ ol{margin-left:20px} li{margin-bottom:8px}
+ .links{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+ a.btn{display:inline-block;padding:10px 16px;border:1px solid var(--rule);border-radius:3px;color:var(--accent);
+       text-decoration:none;font-weight:650;font-size:14px;background:var(--panel)}
+ footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute)}
+</style></head><body><div class="w">
+ <div class="kick">HackCanton Season 3 · RWA &amp; Business Workflows</div>
+ <h1>Earnout Settlement Ledger — demo</h1>
+ <p class="lede">A complete earnout lifecycle on Canton: four parties, rules locked at signing, and an attempt to rewrite them that fails on the ledger rather than in a courtroom.</p>
+ <video controls preload="metadata" playsinline poster="demo/captions/c00.png">
+   <source src="demo/earnout-demo-captioned.mp4" type="video/mp4">
+   <source src="demo/earnout-demo.webm" type="video/webm">
+ </video>
+ <p class="cap">59 seconds · captions burned in · recorded against LocalNet. The DevNet re-recording is listed as Season 3 work in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/s3-log.md">docs/s3-log.md</a>.</p>
+ <h2>What you are watching</h2>
+ <ol>
+   <li><b>Signing.</b> Buyer proposes metric definitions, thresholds, evaluation logic, attestor and arbiter. Seller accepts. Both signatures are required for the contract to exist.</li>
+   <li><b>A clean quarter.</b> The bank attests the period's account snapshot; the buyer reports against it; the contract evaluates and records the earned amount.</li>
+   <li><b>A contested quarter.</b> An anomaly routes to the arbiter named at signing — not to a forum chosen after the argument started.</li>
+   <li><b>The attack.</b> The buyer tries to move the thresholds after a bad quarter. There is no such choice in the model, so the transaction fails.</li>
+   <li><b>Settlement.</b> The final payout transfers atomically in a single transaction.</li>
+ </ol>
+ <div class="links">
+   <a class="btn" href="https://github.com/kimsabin725/earnout-settlement-ledger">Source code</a>
+   <a class="btn" href="pitch/EarnoutSettlementLedger-HackCanton-S3.pdf">Pitch deck (PDF)</a>
+   <a class="btn" href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/business-brief.md">Business brief</a>
+   <a class="btn" href="demo/earnout-demo-captioned.mp4">Download the video</a>
+ </div>
+ <footer>Daml model 0.0.6 · 21 transactions, 5 must-fail scenarios: <code>dpm test --package-root tests</code></footer>
+</div></body></html>
