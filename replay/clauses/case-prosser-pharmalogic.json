@@ -4,7 +4,8 @@
   "provenance": "PUBLIC RECORD. Prosser v. PharmaLogic Holdings Corp., C.A. No. N25C-08-284 MAA CCLD (Del. Super. Ct., Complex Commercial Litigation Division, July 7, 2026), as summarised at delawarechancery.foxrothschild.com. Figures below are the ones the source states: a $7,000,000 EBITDA threshold, a $6,600,000 payment for EBITDA between $7,000,000 and $7,499,999, and a buyer-reported EBITDA of $6,800,000 — $200,000 short. Nothing here is invented, and nothing is added where the source is silent.",
   "simplifications": [
     "The real clause is tiered above $7,499,999. This file expresses only the tier that was in play, because that is the tier the dispute turned on. A tiered clause as a whole is not expressible in the signed terms — see case-winshall-viacom.json for the same refusal.",
-    "oneOffOutflows carries only the one adjustment the source quantifies: 'more than $170,000 in additional expenses from switching to a new supplier'. The sellers also allege higher bad debt, a new 401(k) match and sales bonuses, and the source gives no figures for those, so they are not in this file."
+    "oneOffOutflows carries only the one adjustment a source quantifies: 'more than $170,000 in additional expenses from switching to a new supplier' (Fox Rothschild summary). A second source (Reed Smith) attributes no dollar amount to any individual action, so this figure rests on one source. The other alleged items — higher bad debt, a new 401(k) match, sales bonuses — have no published figures and are not in this file.",
+    "The sources give no length for the earnout period, so it is expressed as a single period measured once. If the real clause measured several periods, this file is the right arithmetic on the wrong shape."
   ],
   "deal": {
     "dealId": "REPLAY-PROSSER-PHARMALOGIC",
@@ -22,8 +23,12 @@
     }
   },
   "schedule": [
-    { "period": 1, "metricValue": 6800000, "oneOffOutflows": 170000,
-      "basisHash": "n/a — the public record has no account snapshot to hash" }
+    {
+      "period": 1,
+      "metricValue": 6800000,
+      "oneOffOutflows": 170000,
+      "basisHash": "n/a — the public record has no account snapshot to hash"
+    }
   ],
   "settled": {
     "payout": 0,
