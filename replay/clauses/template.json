@@ -1,0 +1,31 @@
+{
+  "id": "YourClauseName",
+  "label": "One line: whose clause this is, and what makes it interesting",
+  "provenance": "Where this came from. If it is a real clause, say the firm/advisor and that it is shared with permission, redacted. If it is invented, say SYNTHETIC.",
+  "deal": {
+    "dealId": "REPLAY-001",
+    "metricName": "Quarterly operating net cash flow"
+  },
+  "terms": {
+    "periodBasis": "per-period",
+    "metricTarget": 80000000,
+    "periods": 4,
+    "payout": {
+      "type": "all-or-nothing",
+      "thresholdType": "count-of-periods-met",
+      "requiredPeriodsMet": 3,
+      "amount": 400000000
+    }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": 0, "oneOffOutflows": 0, "basisHash": "sha256:..." },
+    { "period": 2, "metricValue": 0, "oneOffOutflows": 0 },
+    { "period": 3, "metricValue": 0, "oneOffOutflows": 0,
+      "dispute": { "raisedBy": "seller", "arbiterMet": true, "reasoning": "How the parties actually resolved this period" } },
+    { "period": 4, "metricValue": 0, "oneOffOutflows": 0 }
+  ],
+  "settled": {
+    "payout": 400000000,
+    "note": "What the parties actually paid, and how you know"
+  }
+}

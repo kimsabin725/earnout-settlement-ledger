@@ -1,0 +1,27 @@
+{
+  "id": "SyntheticCumulativeRatchet",
+  "label": "Synthetic — a cumulative target with a sliding payout, which this ledger cannot express",
+  "provenance": "SYNTHETIC. Written deliberately outside the signed-terms model. If a practitioner's real clause looks like this, the harness must say so instead of quietly approximating it.",
+  "deal": {
+    "dealId": "REPLAY-SYN-3",
+    "metricName": "Cumulative EBITDA over eight quarters"
+  },
+  "terms": {
+    "periodBasis": "cumulative",
+    "metricTarget": 640000000,
+    "periods": 8,
+    "payout": {
+      "type": "sliding",
+      "thresholdType": "percentage-of-target",
+      "requiredPeriodsMet": 1,
+      "amount": 400000000,
+      "caps": { "max": 500000000 }
+    },
+    "caps": { "max": 500000000 }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": 70000000, "oneOffOutflows": 0 },
+    { "period": 2, "metricValue": 74000000, "oneOffOutflows": 0 }
+  ],
+  "settled": { "payout": 210000000, "note": "SYNTHETIC: paid pro rata at 52% of the cumulative target." }
+}

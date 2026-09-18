@@ -1,0 +1,30 @@
+{
+  "id": "SyntheticMissedEarnout",
+  "label": "Synthetic — the earnout genuinely missed, and the ledger must close it unpaid",
+  "provenance": "SYNTHETIC. Invented figures. Included because a harness that can only reproduce payouts is not a test.",
+  "deal": {
+    "dealId": "REPLAY-SYN-2",
+    "metricName": "Quarterly operating net cash flow"
+  },
+  "terms": {
+    "periodBasis": "per-period",
+    "metricTarget": 80000000,
+    "periods": 4,
+    "payout": {
+      "type": "all-or-nothing",
+      "thresholdType": "count-of-periods-met",
+      "requiredPeriodsMet": 3,
+      "amount": 400000000
+    }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": 84000000, "oneOffOutflows": 0, "basisHash": "sha256:syn2-p1" },
+    { "period": 2, "metricValue": 62000000, "oneOffOutflows": 4000000, "basisHash": "sha256:syn2-p2" },
+    { "period": 3, "metricValue": 58000000, "oneOffOutflows": 1000000, "basisHash": "sha256:syn2-p3" },
+    { "period": 4, "metricValue": 90000000, "oneOffOutflows": 0, "basisHash": "sha256:syn2-p4" }
+  ],
+  "settled": {
+    "payout": 0,
+    "note": "SYNTHETIC: two of four periods met against a three-of-four threshold; nothing was paid."
+  }
+}

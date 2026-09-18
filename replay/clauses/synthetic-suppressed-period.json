@@ -1,0 +1,31 @@
+{
+  "id": "SyntheticSuppressedPeriod",
+  "label": "Synthetic — a missed period that a one-off outflow would have carried, resolved by the named arbiter",
+  "provenance": "SYNTHETIC. The fact pattern is the recurring one in Delaware earnout litigation (buyer-controlled cost allocation in a measurement period); every figure is invented to exercise the harness. No practitioner clause is reproduced here.",
+  "deal": {
+    "dealId": "REPLAY-SYN-1",
+    "metricName": "Quarterly operating net cash flow"
+  },
+  "terms": {
+    "periodBasis": "per-period",
+    "metricTarget": 80000000,
+    "periods": 4,
+    "payout": {
+      "type": "all-or-nothing",
+      "thresholdType": "count-of-periods-met",
+      "requiredPeriodsMet": 3,
+      "amount": 400000000
+    }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": 92000000, "oneOffOutflows": 0, "basisHash": "sha256:syn1-p1" },
+    { "period": 2, "metricValue": 85000000, "oneOffOutflows": 0, "basisHash": "sha256:syn1-p2" },
+    { "period": 3, "metricValue": 51000000, "oneOffOutflows": 30000000, "basisHash": "sha256:syn1-p3",
+      "dispute": { "raisedBy": "seller", "arbiterMet": true, "reasoning": "The 30M outflow was a group restructuring charge allocated into the target entity after closing; excluded for the purpose of the period test." } },
+    { "period": 4, "metricValue": 79000000, "oneOffOutflows": 0, "basisHash": "sha256:syn1-p4" }
+  ],
+  "settled": {
+    "payout": 400000000,
+    "note": "SYNTHETIC: the parties settled the full tranche after the arbiter excluded the allocated charge."
+  }
+}
