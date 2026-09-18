@@ -21,7 +21,7 @@
 </style></head><body><div class="w">
  <div class="kick">HackCanton Season 3 · RWA &amp; Business Workflows</div>
  <h1>Earnout Settlement Ledger — demo</h1>
- <p class="lede">A complete earnout lifecycle on Canton: four parties, rules locked at signing, and an attempt to rewrite them that fails on the ledger rather than in a courtroom.</p>
+ <p class="lede">A complete earnout lifecycle on Canton: four parties, rules locked at signing, and a forged verdict that fails on the ledger rather than in a courtroom.</p>
  <video controls preload="metadata" playsinline poster="demo/captions/c00.png">
    <source src="demo/earnout-demo-captioned.mp4" type="video/mp4">
    <source src="demo/earnout-demo.webm" type="video/webm">
@@ -30,10 +30,10 @@
  <h2>What you are watching</h2>
  <ol>
    <li><b>Signing.</b> Buyer proposes metric definitions, thresholds, evaluation logic, attestor and arbiter. Seller accepts. Both signatures are required for the contract to exist.</li>
-   <li><b>A clean quarter.</b> The bank attests the period's account snapshot; the buyer reports against it; the contract evaluates and records the earned amount.</li>
-   <li><b>A contested quarter.</b> An anomaly routes to the arbiter named at signing — not to a forum chosen after the argument started.</li>
-   <li><b>The attack.</b> The buyer tries to move the thresholds after a bad quarter. There is no such choice in the model, so the transaction fails.</li>
-   <li><b>Settlement.</b> The final payout transfers atomically in a single transaction.</li>
+   <li><b>A clean quarter.</b> The bank attests the period's account snapshot; the buyer can only submit bank-signed data; the contract evaluates it against the signed threshold and records a verdict carrying both parties' signatures.</li>
+   <li><b>A contested quarter.</b> Q3 lands below target, but the ledger flags it because a one-off outflow would have covered the gap. The seller disputes; the arbiter named at signing resolves it and the reasoning is recorded on-ledger — not a forum chosen after the argument started.</li>
+   <li><b>The attack.</b> After a missed quarter the buyer tries to write a favorable verdict alone. A verdict is a dual-signatory contract, so the participant node rejects the submission — the error shown on screen is the ledger&rsquo;s, not the app&rsquo;s. (Moving the thresholds is not even attemptable: the model has no choice that amends signed terms.)</li>
+   <li><b>Settlement.</b> Three of four quarters met, so finalization creates the obligation and <code>Settle</code> moves the tranche and closes the contract in one transaction.</li>
  </ol>
  <div class="links">
    <a class="btn" href="https://github.com/kimsabin725/earnout-settlement-ledger">Source code</a>
