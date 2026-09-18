@@ -2,9 +2,14 @@
 
 The success metric for this hackathon is not a demo that runs. It is this:
 
-> three real earnout clauses, drafted by practising M&A lawyers and not by me, each compile
-> into the ledger's metric definition format and replay their entire historical quarterly
-> schedule on Canton, producing the payout the parties actually settled on.
+> earnout clauses **we did not write** must compile into the ledger's signed terms and replay
+> their own historical schedule to the payout that was actually made.
+
+Five clauses from the public record have been run. One — Prosser v. PharmaLogic Holdings —
+compiles and replays on the ledger to the $0 that was actually paid. Four are refused as
+inexpressible, and `docs/validation.md` publishes the reason for each rather than widening the
+model to raise the pass rate. A clause drafted by a practising lawyer is the next input, not a
+claim already banked.
 
 This directory is the machine that answers that. It is deliberately falsifiable: if a
 practitioner's clause cannot be expressed in the signed terms, the harness says so and stops,
