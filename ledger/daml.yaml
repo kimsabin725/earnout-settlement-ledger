@@ -1,4 +1,4 @@
-sdk-version: 3.5.2
+sdk-version: 3.4.11
 name: earnout-ledger
 source: daml
 version: 0.0.6

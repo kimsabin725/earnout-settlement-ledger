@@ -71,11 +71,12 @@ work, and it is the part that decides whether the premise holds.
 
 ## SDK note
 
-The packages pin `sdk-version: 3.5.2` (the Canton 3.x line), which is not installable from
-the public `daml install` channel. `run.sh` therefore falls back to whatever SDK is present
-(`DAML_SDK_VERSION`), and the model compiles either way because it targets LF 2.2.
+The packages pin `sdk-version: 3.4.11`, which is what `daml install` can actually fetch from the
+public channel. The earlier pin was `3.5.2` (the Canton 3.x line), and that release is not
+downloadable from the public channel at all, so a clone could not be built as pinned — the pin is
+now the version this repository is actually built and tested with. The model targets LF 2.2 either
+way.
 
-One consequence worth knowing before a deployment: building with the fallback SDK **rewrites**
-`ledger/.daml/dist/earnout-ledger-0.0.6.dar`, and a DAR built by a different SDK is a
-different package on the ledger. Anything uploaded to DevNet must be built in the pinned
-3.5.2 environment (the cn-quickstart devshell), not by this harness.
+One consequence worth knowing before a deployment: a DAR built by a different SDK is a different
+package on the ledger. Whatever is uploaded to DevNet should be the DAR built here, or rebuilt in
+the cn-quickstart environment and re-verified — not assumed interchangeable.

@@ -24,4 +24,9 @@ fi
 echo
 echo "== running the replays on the ledger"
 cd tests
-"$DAML" test --no-legacy-assistant-warning 2>&1 | grep -E "^daml/|[Ee]rror|[Ff]ailed"
+out=$("$DAML" test --no-legacy-assistant-warning 2>&1) || true
+echo "$out" | grep -E "^daml/|[Ee]rror|[Ff]ailed" || {
+  echo "!! 원장 실행이 아무 결과도 내지 않았다. 도구 문제일 가능성이 높다:"
+  echo "$out" | tail -5
+  exit 1
+}
