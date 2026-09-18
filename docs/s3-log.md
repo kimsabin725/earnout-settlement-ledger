@@ -4,4 +4,4 @@ Rule: everything built after Sep 18, 2026 is listed here with the commit hash, s
 
 | Date | Commit | What |
 |---|---|---|
-| | | |
+| 2026-09-18 | `0b6a38c` | Source attribution corrected (ABA study for earnout prevalence, SRS Acquiom for the dispute and collection rates); 11-slide judging deck added under `docs/pitch/`. |
