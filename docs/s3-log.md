@@ -8,3 +8,4 @@ Rule: everything built after Sep 18, 2026 is listed here with the commit hash, s
 | 2026-09-18 | `ba46b33` | This work log opened; README gained the pre-hackathon / Season 3 split and `docs/validation.md`. |
 | 2026-09-18 | `0cd3c12` | GitHub Pages demo page (`docs/index.html`) so the recording plays in the browser instead of downloading; negative-test count stated exactly (5 asserted + 2 unrepresentable). |
 | 2026-09-18 | `d2e7e46` | Local absolute paths removed from `docs/record-demo.mjs` and `scripts/verify-ui-lifecycle.mjs` before publishing. |
+| 2026-09-18 | `7b8736d` | Replay harness (`replay/`): a written earnout clause compiles into signed terms or is rejected with the reason, then replays its own historical schedule on the ledger and asserts the payout the parties settled on. Three synthetic fixtures; no practitioner clause yet. |
