@@ -1,0 +1,27 @@
+{
+  "id": "CaseLazardQinetiq",
+  "label": "Lazard Technology Partners v. QinetiQ (Cyveillance) — 'up to $40 million if revenues reached a certain level'",
+  "provenance": "PUBLIC RECORD. Lazard Tech. Partners, LLC v. QinetiQ N. Am. Operations LLC, No. 464,2014 (Del. Apr. 23, 2015). The opinion describes a $40 million payment at closing plus 'up to another $40 million if the company's revenues reached a certain level', and states that when the earn-out period ended the revenues had not reached the level required, so no earn-out was generated. The level itself and the actual revenues are not in the opinion.",
+  "deal": {
+    "dealId": "REPLAY-LAZARD-CYVEILLANCE",
+    "metricName": "Cyveillance revenue over the earn-out period"
+  },
+  "terms": {
+    "periodBasis": "per-period",
+    "metricTarget": null,
+    "periods": 1,
+    "payout": {
+      "type": "tiered",
+      "thresholdType": "revenue-level",
+      "requiredPeriodsMet": 1,
+      "amount": 40000000
+    }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": null, "oneOffOutflows": 0 }
+  ],
+  "settled": {
+    "payout": 0,
+    "note": "No earn-out was paid: the opinion states the revenues did not reach the required level."
+  }
+}

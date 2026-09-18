@@ -31,13 +31,17 @@ function check(clause) {
   if (!SUPPORTED.periodBasis.includes(t.periodBasis))
     reasons.push(`periodBasis "${t.periodBasis}" — the contract evaluates each period against a fixed target; a cumulative or catch-up basis would need the signed terms to carry running state, which they deliberately do not.`);
   if (!SUPPORTED.payoutType.includes(p.type))
-    reasons.push(`payout type "${p.type}" — the tranche is all-or-nothing. A sliding or pro-rata payout is a different computation and would have to be signed as such.`);
+    reasons.push(`payout type "${p.type}" — the tranche is all-or-nothing. Tiered, sliding, interpolated and formula payouts — the common shapes in the public record — are different computations and would have to be signed as such.`);
   if (p.type === 'all-or-nothing' && !SUPPORTED.thresholdType.includes(p.thresholdType ?? 'count-of-periods-met'))
     reasons.push(`threshold type "${p.thresholdType}" — the only threshold the contract counts is how many periods were met.`);
   if (Array.isArray(t.metrics) && t.metrics.length > 1)
     reasons.push(`${t.metrics.length} metrics — one metric per agreement. Two metrics means two agreements, or a metric defined as a formula before it reaches the ledger.`);
   if (t.caps || t.floors)
     reasons.push('caps/floors on the tranche — not expressible; the tranche amount is a single signed figure.');
+  if (Array.isArray(t.metricTargetsByPeriod))
+    reasons.push(`the target changes by period (${t.metricTargetsByPeriod.join(', ')}) — the signed terms carry one target for every period, so a rising or stepped target is a different contract.`);
+  if (t.aggregation && t.aggregation !== 'per-period')
+    reasons.push(`aggregation "${t.aggregation}" — the contract tests each period on its own and counts how many passed.`);
   const sched = clause.schedule ?? [];
   if (sched.length !== t.periods)
     reasons.push(`schedule has ${sched.length} periods but the terms declare ${t.periods}. The contract requires every period reported, in order, exactly once.`);
@@ -53,6 +57,18 @@ function check(clause) {
 }
 
 // --- reference evaluation: exactly the model's arithmetic -------------------
+// A clause can be perfectly expressible and still not replayable: the public record
+// often gives the structure and withholds the figures. That is a data gap, not a design one.
+function missingFigures(clause) {
+  const gaps = [];
+  if (clause.terms?.metricTarget === null) gaps.push('the target itself is not in the source');
+  (clause.schedule ?? []).forEach((q) => {
+    if (q.metricValue === null || q.metricValue === undefined) gaps.push(`period ${q.period} has no reported figure`);
+  });
+  if (clause.settled?.payout === null || clause.settled?.payout === undefined) gaps.push('the amount actually paid is not in the source');
+  return gaps;
+}
+
 function evaluate(clause) {
   const t = clause.terms, target = t.metricTarget;
   const verdicts = clause.schedule.map((q) => {
@@ -147,16 +163,25 @@ const files = args.length ? args
   : fs.readdirSync(path.join(HERE, 'clauses')).filter((f) => f.endsWith('.json') && f !== 'template.json')
       .map((f) => path.join(HERE, 'clauses', f));
 
-let compiled = 0, rejected = 0, diverged = 0;
+let compiled = 0, rejected = 0, diverged = 0, incomplete = 0;
 for (const file of files) {
   const clause = JSON.parse(fs.readFileSync(file, 'utf8'));
   clause._file = path.basename(file);
   console.log(`\n=== ${clause.id} — ${clause.label}`);
+  (clause.simplifications ?? []).forEach((w) => console.log(`  NOTE (simplification): ${w}`));
+  const gaps = missingFigures(clause);
   const reasons = check(clause);
+  if (gaps.length && !reasons.length) {
+    incomplete++;
+    console.log('  EXPRESSIBLE BUT NOT REPLAYABLE — the figures are not public:');
+    gaps.forEach((g) => console.log(`   - ${g}`));
+    continue;
+  }
   if (reasons.length) {
     rejected++;
     console.log('  DOES NOT COMPILE. This is a finding about the clause, not a bug:');
     reasons.forEach((r) => console.log(`   - ${r}`));
+    if (gaps.length) console.log(`   (and the source does not give: ${gaps.join('; ')})`);
     continue;
   }
   const ev = evaluate(clause);
@@ -169,6 +194,6 @@ for (const file of files) {
   compiled++;
   console.log(`  wrote tests/daml/Replay/${clause.id}.daml — run 'replay/run.sh' to execute it on the ledger`);
 }
-console.log(`\n${compiled} compiled, ${rejected} not expressible, ${diverged} diverging from the settled payout by reference arithmetic.`);
+console.log(`\n${compiled} compiled, ${rejected} not expressible, ${incomplete} expressible but missing public figures, ${diverged} diverging from the settled payout by reference arithmetic.`);
 console.log('The reference arithmetic is a pre-check. The ledger run is the answer.');
 process.exit(diverged > 0 ? 1 : 0);

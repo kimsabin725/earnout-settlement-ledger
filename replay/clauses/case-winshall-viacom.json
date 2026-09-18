@@ -1,0 +1,30 @@
+{
+  "id": "CaseWinshallViacom",
+  "label": "Winshall v. Viacom (Harmonix) — 3.5x the excess over a rising threshold, uncapped",
+  "provenance": "PUBLIC RECORD. Winshall v. Viacom International Inc., Del. Ch. (2011), aff'd Del. (2013). The opinion states the selling stockholders 'became entitled to receive cash payments equal to three and a half times the excess, if any, over Gross Profit thresholds of $32 million in 2007 and $45 million in 2008.' The opinion does not disclose Harmonix's actual Gross Profit for either year or the amounts ultimately paid, so no figures are asserted here.",
+  "deal": {
+    "dealId": "REPLAY-WINSHALL-HARMONIX",
+    "metricName": "Harmonix Gross Profit (annual)"
+  },
+  "terms": {
+    "periodBasis": "per-period",
+    "metricTarget": null,
+    "metricTargetsByPeriod": [32000000, 45000000],
+    "periods": 2,
+    "payout": {
+      "type": "formula",
+      "thresholdType": "multiple-of-excess",
+      "requiredPeriodsMet": 1,
+      "amount": null,
+      "formula": "3.5 x (Gross Profit - threshold), uncapped"
+    }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": null, "oneOffOutflows": 0 },
+    { "period": 2, "metricValue": null, "oneOffOutflows": 0 }
+  ],
+  "settled": {
+    "payout": null,
+    "note": "The opinions do not state what was paid for either year."
+  }
+}

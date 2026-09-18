@@ -1,0 +1,32 @@
+{
+  "id": "CaseProsserPharmalogic",
+  "label": "Prosser v. PharmaLogic Holdings — a $200,000 EBITDA shortfall against a $6.6m cliff",
+  "provenance": "PUBLIC RECORD. Prosser v. PharmaLogic Holdings Corp., C.A. No. N25C-08-284 MAA CCLD (Del. Super. Ct., Complex Commercial Litigation Division, July 7, 2026), as summarised at delawarechancery.foxrothschild.com. Figures below are the ones the source states: a $7,000,000 EBITDA threshold, a $6,600,000 payment for EBITDA between $7,000,000 and $7,499,999, and a buyer-reported EBITDA of $6,800,000 — $200,000 short. Nothing here is invented, and nothing is added where the source is silent.",
+  "simplifications": [
+    "The real clause is tiered above $7,499,999. This file expresses only the tier that was in play, because that is the tier the dispute turned on. A tiered clause as a whole is not expressible in the signed terms — see case-winshall-viacom.json for the same refusal.",
+    "oneOffOutflows carries only the one adjustment the source quantifies: 'more than $170,000 in additional expenses from switching to a new supplier'. The sellers also allege higher bad debt, a new 401(k) match and sales bonuses, and the source gives no figures for those, so they are not in this file."
+  ],
+  "deal": {
+    "dealId": "REPLAY-PROSSER-PHARMALOGIC",
+    "metricName": "Earnout period EBITDA (as defined in the purchase agreement)"
+  },
+  "terms": {
+    "periodBasis": "per-period",
+    "metricTarget": 7000000,
+    "periods": 1,
+    "payout": {
+      "type": "all-or-nothing",
+      "thresholdType": "count-of-periods-met",
+      "requiredPeriodsMet": 1,
+      "amount": 6600000
+    }
+  },
+  "schedule": [
+    { "period": 1, "metricValue": 6800000, "oneOffOutflows": 170000,
+      "basisHash": "n/a — the public record has no account snapshot to hash" }
+  ],
+  "settled": {
+    "payout": 0,
+    "note": "No earnout was paid. The buyer's earnout statement reported $6,800,000 against a $7,000,000 threshold. The sellers' claim that buyer-side charges depressed the figure survived dismissal in part and is live litigation, so the settled figure here is what was actually paid, not what a court may later order."
+  }
+}
