@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Would your earnout clause compile?</title>
+<title>Is your earnout arithmetic, or judgement?</title>
 <style>
  :root{--ink:#0E1A2B;--body:#2A3B52;--mute:#6B7C93;--rule:#DFE5EC;--accent:#1B4D8F;--panel:#F5F7FA;--bg:#fff;--no:#8A3324;--yes:#1D6B4F}
  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#EAF0F7;--body:#C2CFDE;--mute:#8A9BB0;--rule:#243347;--accent:#6FA8E0;--panel:#14202F;--bg:#0B131D;--no:#E2A08F;--yes:#7FC9A8}}
@@ -24,13 +24,18 @@
  #out{margin-top:26px;padding:18px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);display:none}
  #out h3{font-size:19px;margin-bottom:8px}
  #out ul{margin:10px 0 0 20px} #out li{margin-bottom:8px}
+ .record{margin-top:18px;padding:14px 16px;border:1px solid var(--rule);border-radius:3px;background:var(--bg)}
+ .record h4{font-size:14px;color:var(--ink);margin-bottom:6px}
+ .record p{font-size:15px}
+ .record .src{margin-top:8px;font-size:13px;color:var(--mute)}
+ .copy{margin-top:10px;padding:8px 14px;font-size:14px;background:var(--panel);color:var(--accent);border:1px solid var(--rule)}
  .verdict{margin-top:16px;padding:12px;border:1px dashed var(--rule);border-radius:3px;font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);white-space:pre-wrap;word-break:break-word}
  footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute)}
  a{color:var(--accent)}
 </style></head><body><div class="w">
 <div class="kick">Earnout Settlement Ledger · a two-minute check</div>
-<h1>Would your earnout clause compile?</h1>
-<p class="lede">This model puts an earnout on a ledger where the metric, the target, the threshold and the arbiter are signed once at closing and cannot be changed afterwards. It only fits some clause shapes. This tells you in two minutes whether yours is one of them — and if not, exactly why.</p>
+<h1>Is your earnout arithmetic, or judgement?</h1>
+<p class="lede">Some earnouts settle themselves: a number clears a line, the money moves. Others need somebody to decide — whether the effort was reasonable, whether that expense belonged in the calculation, whether the milestone counts. Only the first kind can be settled by a contract that was signed before anyone knew the answer. Eight questions tell you which kind yours is, and if it is the second, exactly which part needs a human.</p>
 
 <div class="privacy"><b>Nothing you enter leaves your browser.</b> The check runs entirely in this page: no server, no analytics, and the page makes no request of its own once it has loaded — the only thing your browser fetched was the page itself. View source if you would rather confirm that than take my word for it. No figures are asked for either: the answer depends on the <i>shape</i> of the clause, not its numbers.</div>
 
@@ -52,10 +57,11 @@
     </div>
   </div>
   <div class="q">
-    <label>How is each period judged?</label>
+    <label>Can a good period make up for a bad one?</label>
+    <div class="hint">A strong final year rescuing a weak second year, a shortfall carried forward, a cumulative total.</div>
     <div class="opts">
-      <label><input type="radio" name="basis" value="per-period" checked> Each period against its own fixed target</label>
-      <label><input type="radio" name="basis" value="cumulative"> Cumulative, or a later period can catch up an earlier one</label>
+      <label><input type="radio" name="basis" value="per-period" checked> No — each period stands on its own</label>
+      <label><input type="radio" name="basis" value="cumulative"> Yes — periods can carry or offset each other</label>
     </div>
   </div>
   <div class="q">
@@ -66,10 +72,12 @@
     </div>
   </div>
   <div class="q">
-    <label>What decides that the tranche is owed?</label>
+    <label>How many times is the metric measured?</label>
+    <div class="hint">A single measurement at the end of the earnout period counts as once.</div>
     <div class="opts">
-      <label><input type="radio" name="threshold" value="count-of-periods-met" checked> How many periods hit the target</label>
-      <label><input type="radio" name="threshold" value="other"> Something else (a cumulative total, an average, a final-year figure)</label>
+      <label><input type="radio" name="threshold" value="single-period" checked> Once — the tranche turns on that one figure</label>
+      <label><input type="radio" name="threshold" value="count-of-periods-met"> Several periods, and what counts is how many hit the target</label>
+      <label><input type="radio" name="threshold" value="other"> Several periods, but the test is something else (a running total, an average)</label>
     </div>
   </div>
   <div class="q">
@@ -80,10 +88,11 @@
     </div>
   </div>
   <div class="q">
-    <label>Any cap or floor on the tranche itself?</label>
+    <label>Is there a floor or ceiling layered on top of that?</label>
+    <div class="hint">&ldquo;Up to $X&rdquo; is usually just the amount itself, not a separate limit. This asks about a second one — a guaranteed minimum, or a ceiling applied after the calculation.</div>
     <div class="opts">
-      <label><input type="radio" name="caps" value="no" checked> No — it is a single agreed amount</label>
-      <label><input type="radio" name="caps" value="yes"> Yes</label>
+      <label><input type="radio" name="caps" value="no" checked> No — if it falls due, the agreed amount is paid in full</label>
+      <label><input type="radio" name="caps" value="yes"> Yes, there is a separate minimum or ceiling</label>
     </div>
   </div>
   <div class="q">
@@ -102,12 +111,34 @@
 <footer>
   The refusal rules here are the same ones in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/replay/compile.mjs">replay/compile.mjs</a>, which is what actually compiles a clause file and replays it on the ledger. Five clauses from the public record have been through it — one reproduces the payout that was actually made, four are refused, and the reasons are in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/validation.md">docs/validation.md</a>.
   <br><br>
-  If this got your clause wrong, that is the most useful thing you could tell me — <a href="https://github.com/kimsabin725/earnout-settlement-ledger/issues/new">open an issue</a> or reply wherever you found this. The verdict line is all I need; no figures.
+  <b>If it got your clause wrong, that is the most useful thing you could send me.</b> Reply to whatever brought you here, or <a href="https://github.com/kimsabin725/earnout-settlement-ledger/issues/new">open an issue</a>. The verdict line is all I need — no figures, no names, no deal.
+  <br><br>
+  What comes back gets written down in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/validation.md">docs/validation.md</a>, including replies that say this page is wrong, and each one becomes a test case so the same mistake cannot come back. If nobody replies, that is recorded too.
 </footer>
 </div>
 <script>
 // The same checks as replay/compile.mjs, asked in words instead of JSON. Kept in
 // one place mentally: if a rule changes there, it changes here.
+
+// What the public record says about clauses shaped like theirs. This is the only
+// part of the page that is for them rather than for me: nine Delaware earnout
+// disputes, classified by payout shape in docs/validation.md, with what the fight
+// was actually about in each group.
+const RECORD = {
+  event: {
+    n: 4,
+    text: 'Four of the nine turn on event milestones like yours — Himawan v. Cephalon, Fortis v. J&amp;J (Auris), SRS v. Alexion, Fortis v. Medtronic. In none of them was the fight about a number. It was about whether the buyer used commercially reasonable efforts, which is a question about conduct that no calculation settles. Two of those four ended in nine and ten-figure awards against the buyer.',
+  },
+  formula: {
+    n: 3,
+    text: 'Three of the nine are tiered or formula payouts like yours — Lazard v. QinetiQ, Winshall v. Viacom, In re SwervePay. The arguments split: one over whether the buyer&rsquo;s own conduct caused the miss, one over the calculation itself, and one over a baseline that was already misstated before anyone signed.',
+  },
+  cliff: {
+    n: 2,
+    text: 'Two of the nine are the shape yours is — Prosser v. PharmaLogic and AM Buyer v. Argosy. In Prosser the reported figure landed $200,000 under a $7,000,000 threshold and the $6.6m tranche paid nothing; the sellers allege the buyer loaded expenses to get there. That is the characteristic fight for a cliff: not whether the arithmetic was done right, but what went into the number.',
+  },
+};
+
 document.getElementById('f').addEventListener('submit', (e) => {
   e.preventDefault();
   const v = (n) => document.querySelector(`input[name="${n}"]:checked`).value;
@@ -115,7 +146,7 @@ document.getElementById('f').addEventListener('submit', (e) => {
   const tags = [];
 
   if (v('trigger') === 'event') {
-    reasons.push('<b>The trigger is an event, not a figure.</b> The contract compares a number to a target. An event needs someone who signs that the event happened, and the attestation template carries a figure, not a fact. This is a second product, not a wider number — and it is the most common shape in the litigated record.');
+    reasons.push('<b>The trigger is an event, not a figure.</b> The contract compares a number to a target. A number can be attested by a bank. Somebody still has to decide whether an approval was really obtained, whether the launch counts as a launch — and that decision is the whole fight in most milestone disputes. This is the most common shape in the litigated record, and it needs a different instrument, not a bigger number.');
     tags.push('event trigger');
   }
   if (v('payout') === 'tiered') {
@@ -127,7 +158,7 @@ document.getElementById('f').addEventListener('submit', (e) => {
     tags.push('formula payout');
   }
   if (v('basis') === 'cumulative') {
-    reasons.push('<b>Periods are not independent.</b> A cumulative or catch-up basis needs the signed terms to carry running state, which they deliberately do not.');
+    reasons.push('<b>Periods are not independent.</b> A cumulative or catch-up basis means a later period can change what an earlier one already settled, so no period is final when it closes. The terms signed at closing deliberately have no memory between periods.');
     tags.push('cumulative basis');
   }
   if (v('moving') === 'yes') {
@@ -135,20 +166,24 @@ document.getElementById('f').addEventListener('submit', (e) => {
     tags.push('moving target');
   }
   if (v('threshold') === 'other') {
-    reasons.push('<b>The threshold is not a count of periods.</b> The only thing the contract counts is how many periods met the target.');
-    tags.push('non-count threshold');
+    reasons.push('<b>The test spans periods.</b> Each period is judged on its own and the contract counts how many met the target. A running total or an average means no period is settled until the last one is, which is a different bargain.');
+    tags.push('cross-period test');
   }
   if (v('metrics') !== '1') {
     reasons.push('<b>More than one metric.</b> One metric per agreement. Two metrics means two agreements, or a metric defined as a formula before it reaches the ledger.');
     tags.push('multiple metrics');
   }
   if (v('caps') === 'yes') {
-    reasons.push('<b>A cap or floor on the tranche.</b> The tranche amount is a single signed figure.');
+    reasons.push('<b>A separate floor or ceiling.</b> The tranche is one signed figure; a second limit applied on top of it is a different computation.');
     tags.push('cap/floor');
   }
 
   // Not a refusal by the compiler, but the clause cannot be run honestly without it.
   const noAttestor = v('attestor') === 'no';
+
+  const shape = v('trigger') === 'event' ? 'event'
+    : (v('payout') !== 'all-or-nothing' ? 'formula' : 'cliff');
+  const rec = RECORD[shape];
 
   const out = document.getElementById('out');
   const fits = reasons.length === 0;
@@ -166,9 +201,16 @@ document.getElementById('f').addEventListener('submit', (e) => {
     + (noAttestor
         ? `<p style="margin-top:12px"><b>One more thing, whatever the verdict.</b> If only the buyer's own books produce the figure, this model does less than it looks like it does: the contract enforces the computation, not the truthfulness of the input. It needs someone other than the buyer to sign the number.</p>`
         : '')
-    + `<div class="verdict">${verdict}</div>
-       <p style="margin-top:10px;font-size:14px;color:var(--mute)">That line is the whole finding, and it contains nothing confidential. If it is wrong about your clause, sending it back is worth more to me than a meeting.</p>`;
+    + `<div class="record"><h4>What happened to clauses shaped like yours</h4><p>${rec.text}</p>
+        <p class="src">From nine Delaware earnout disputes classified by payout shape in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/validation.md">docs/validation.md</a>. These are earnouts that reached a judge, not a sample of earnouts generally — cases get there because something was arguable, so read it as what the arguable ones look like.</p></div>
+       <div class="verdict" id="v">${verdict}</div>
+       <button type="button" id="copy" class="copy">Copy that line</button>
+       <p style="margin-top:10px;font-size:14px;color:var(--mute)">That line is the whole finding and contains nothing confidential. If it is wrong about your clause, sending it back is worth more to me than a meeting.</p>`;
   out.style.display = 'block';
+  document.getElementById('copy').addEventListener('click', async (ev) => {
+    try { await navigator.clipboard.writeText(verdict); ev.target.textContent = 'Copied'; }
+    catch { ev.target.textContent = 'Select the line above and copy it'; }
+  });
   out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 </script>

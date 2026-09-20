@@ -1,0 +1,23 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # The page and the model have to agree. They are written in different places
+  # and in different languages, so the only thing keeping them honest is this.
+  clause-rules:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm i -D playwright
+      - run: npx playwright install --with-deps chromium
+      - name: clause files compile or are refused with a reason
+        run: node replay/compile.mjs
+      - name: the page agrees with the model on every combination of answers
+        run: node replay/rules.test.mjs
+      - name: real clause shapes route the way the harness routes them
+        run: node replay/page.test.mjs

@@ -80,8 +80,27 @@ attestation template for event milestones.
    what breaks? (Listen for: classification of one-offs, timing games, who pays the fee.)
 6. Who pays for a service like this today — the deal, the buyer, the seller, the advisor?
 
-## Findings
-(Fill after each call: date · role · 3 quotes · what we changed because of it.)
+## Findings — verdicts received
+
+The primary evidence is a verdict line from someone who holds a real clause. One line per reply,
+including the ones that say the check got it wrong, which are the valuable ones.
+
+| Date | Who (role, no names) | Verdict line | Did the check get it right? | What changed because of it |
+|---|---|---|---|---|
+| — | — | — | — | *(nothing yet — no reply has come back)* |
+
+**Counted as a reply:** a verdict line, or a sentence saying the check misread their clause.
+**Not counted:** "interesting, keep me posted". That is logged as a non-reply, because treating it
+as evidence is how a validation section becomes decoration.
+
+**If a reply says the check got it wrong,** the fix is in one of two files and the difference
+matters. If the *question* misread the clause, `docs/clause-check.html` is wrong and the model is
+fine. If the *model* cannot hold a clause it should, `replay/rules.mjs` is wrong and the signed
+terms need to change. `replay/page.test.mjs` exists to keep those two honest with each other, and
+a new reply becomes a new fixture in it.
+
+## Findings — calls
+(Only if someone offers one. Fill after each: date · role · 3 quotes · what we changed because of it.)
 
 ---
 
