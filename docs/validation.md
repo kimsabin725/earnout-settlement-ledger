@@ -95,3 +95,53 @@ the pre-signing fact is diligence, not settlement infrastructure.
 
 This was pre-registered: the plan said a clause that does not compile gets published with the
 reason instead of the model being quietly widened until it fits. Two did not compile. Here they are.
+
+# What shape are real earnouts? (Sep 20, 2026)
+
+Finding 5 above ended with "how large that segment is, I have not measured and do not claim." This
+measures it, in the only sample that is fully public: earnout disputes that reached a Delaware
+court and were written up by law firms. Nine distinct cases, classified by the **structure of the
+payout**, not by who won.
+
+| Case | Court, date | Structure | Expressible in the signed terms? |
+|---|---|---|---|
+| Prosser v. PharmaLogic Holdings | Del. Super. CCLD, Jul 7 2026 | Per-period EBITDA against a fixed threshold, all-or-nothing | **Yes — replayed to the $0 actually paid** |
+| AM Buyer v. Argosy | Del. Super., Sep 3 2024 | "Earnout Period EBITDA", determined by an independent accountant | **Probably — but the figures are not public, so it has not been run** |
+| Himawan v. Cephalon | Del. Ch., Apr 30 2024 | Regulatory milestones for two drug indications | No — the trigger is an event |
+| Fortis Advisors v. Johnson & Johnson (Auris) | Del. Ch., Sep 4 2024 | Two commercial and eight regulatory milestones, up to $2.35bn | No — the trigger is an event |
+| SRS v. Alexion (Syntimmune) | Del. Ch., Sep 5 2024 | Eight milestones, up to $800m | No — the trigger is an event |
+| Fortis Advisors v. Medtronic | Del. Ch., Jul 29 2024 | $100m tied to sales and net revenue milestones | No — reported as milestone-shaped; whether any leg is a plain numeric threshold is not clear from the summaries, so it is counted as a milestone and flagged |
+| Lazard Tech. Partners v. QinetiQ | Del., Apr 23 2015 | "Up to $40m", tiered | No — tiered payout |
+| Winshall v. Viacom (Harmonix) | Del. Ch. 2011, aff'd 2013 | 3.5x the excess over a threshold that rises between periods | No — formula payout, moving target |
+| In re SwervePay Acquisition | Del. Ch., Jul 31 2026 | "Up to $53.75m" pro-rated against a payment-volume baseline | No — pro-rated formula |
+
+**Two of nine.** The shape this model serves — one metric, one fixed target per period, a tranche
+that either falls due or does not — accounts for two of the nine public disputes, and only one of
+those two has figures public enough to actually run. Four are event milestones. Three are tiered
+or formula payouts.
+
+Three things follow, and the first is the uncomfortable one.
+
+**This is a litigated sample, not a market sample.** Cases reach court because something about them
+was arguable. An all-or-nothing cliff either clears or it does not, which is the easiest kind to
+settle without suing; a milestone that turns on "commercially reasonable efforts" is the hardest.
+So the two-of-nine ratio very likely *understates* how common the cliff structure is in signed
+deals, and *overstates* how badly this model fits the market. I cannot correct for that with public
+data, and I am not going to pick a flattering number instead. The honest statement is narrower:
+**among earnouts that end up in front of a judge, this model addresses two in nine.**
+
+**The refusals are not one problem, they are two.** Event milestones need a different attestation —
+somebody who signs that a thing happened, which a bank does not do. Tiered and formula payouts need
+the same attestation and a different computation. Those are separate pieces of work, and only the
+second is a change to the signed terms. Bundling them as "extend the model" would have hidden that.
+
+**It sharpens who to ask.** If the goal is one practitioner clause that compiles, asking a
+life-sciences deal lawyer is asking someone whose earnouts are milestone-shaped by default. The
+clause most likely to fit comes from a services or distribution deal in the lower middle market,
+where the metric is EBITDA or revenue and the tranche is a cliff. The outreach list is being
+rebuilt around that rather than around who is easiest to find.
+
+Sources for the five cases not already replayed above: Jones Day, "Earnouts in M&A Transactions:
+Recent Decisions From Delaware" (Apr 2025); Mayer Brown, "Chancery Court Applies Conditional
+Probability to Calculate Damages in Earnout Dispute" (Jun 2025). Figures are those the summaries
+state; where a summary says an amount is not disclosed, none is invented here.

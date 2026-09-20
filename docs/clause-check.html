@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Would your earnout clause compile?</title>
+<style>
+ :root{--ink:#0E1A2B;--body:#2A3B52;--mute:#6B7C93;--rule:#DFE5EC;--accent:#1B4D8F;--panel:#F5F7FA;--bg:#fff;--no:#8A3324;--yes:#1D6B4F}
+ @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#EAF0F7;--body:#C2CFDE;--mute:#8A9BB0;--rule:#243347;--accent:#6FA8E0;--panel:#14202F;--bg:#0B131D;--no:#E2A08F;--yes:#7FC9A8}}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--body);font:16px/1.6 -apple-system,"SF Pro Text","Helvetica Neue",Arial,sans-serif;padding:40px 16px 64px}
+ .w{max-width:760px;margin:0 auto}
+ .kick{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+ h1{font-size:32px;line-height:1.15;color:var(--ink);letter-spacing:-.02em;margin:10px 0 12px}
+ p.lede{font-size:18px}
+ .privacy{margin:22px 0 8px;padding:14px 16px;border:1px solid var(--rule);border-left:3px solid var(--accent);background:var(--panel);border-radius:3px;font-size:15px}
+ h2{font-size:15px;color:var(--ink);margin:30px 0 4px}
+ .q{margin:22px 0 0;padding-top:18px;border-top:1px solid var(--rule)}
+ .q:first-of-type{border-top:0}
+ .q > label{display:block;color:var(--ink);font-weight:650;margin-bottom:2px}
+ .hint{font-size:14px;color:var(--mute);margin-bottom:10px}
+ .opts{display:flex;flex-wrap:wrap;gap:8px}
+ .opts label{display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid var(--rule);border-radius:3px;cursor:pointer;font-size:15px;background:var(--bg)}
+ .opts label:hover{border-color:var(--accent)}
+ .opts input{accent-color:var(--accent)}
+ button{margin-top:26px;padding:12px 20px;border:0;border-radius:3px;background:var(--accent);color:#fff;font:inherit;font-weight:650;cursor:pointer}
+ #out{margin-top:26px;padding:18px;border:1px solid var(--rule);border-radius:3px;background:var(--panel);display:none}
+ #out h3{font-size:19px;margin-bottom:8px}
+ #out ul{margin:10px 0 0 20px} #out li{margin-bottom:8px}
+ .verdict{margin-top:16px;padding:12px;border:1px dashed var(--rule);border-radius:3px;font:14px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+ footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute)}
+ a{color:var(--accent)}
+</style></head><body><div class="w">
+<div class="kick">Earnout Settlement Ledger · a two-minute check</div>
+<h1>Would your earnout clause compile?</h1>
+<p class="lede">This model puts an earnout on a ledger where the metric, the target, the threshold and the arbiter are signed once at closing and cannot be changed afterwards. It only fits some clause shapes. This tells you in two minutes whether yours is one of them — and if not, exactly why.</p>
+
+<div class="privacy"><b>Nothing you enter leaves your browser.</b> The check runs entirely in this page: no server, no analytics, and the page makes no request of its own once it has loaded — the only thing your browser fetched was the page itself. View source if you would rather confirm that than take my word for it. No figures are asked for either: the answer depends on the <i>shape</i> of the clause, not its numbers.</div>
+
+<form id="f">
+  <div class="q">
+    <label>What does the payout depend on?</label>
+    <div class="hint">The thing that decides whether money is owed.</div>
+    <div class="opts">
+      <label><input type="radio" name="trigger" value="metric" checked> A number (revenue, EBITDA, units)</label>
+      <label><input type="radio" name="trigger" value="event"> An event (regulatory approval, a launch, a contract signed)</label>
+    </div>
+  </div>
+  <div class="q">
+    <label>How is the tranche paid?</label>
+    <div class="opts">
+      <label><input type="radio" name="payout" value="all-or-nothing" checked> All or nothing — it falls due or it does not</label>
+      <label><input type="radio" name="payout" value="tiered"> Tiered or sliding — partial performance pays partially</label>
+      <label><input type="radio" name="payout" value="formula"> A formula — a multiple of the excess, pro-rated, etc.</label>
+    </div>
+  </div>
+  <div class="q">
+    <label>How is each period judged?</label>
+    <div class="opts">
+      <label><input type="radio" name="basis" value="per-period" checked> Each period against its own fixed target</label>
+      <label><input type="radio" name="basis" value="cumulative"> Cumulative, or a later period can catch up an earlier one</label>
+    </div>
+  </div>
+  <div class="q">
+    <label>Is the target the same in every period?</label>
+    <div class="opts">
+      <label><input type="radio" name="moving" value="no" checked> Same every period</label>
+      <label><input type="radio" name="moving" value="yes"> It rises, steps, or is set per period</label>
+    </div>
+  </div>
+  <div class="q">
+    <label>What decides that the tranche is owed?</label>
+    <div class="opts">
+      <label><input type="radio" name="threshold" value="count-of-periods-met" checked> How many periods hit the target</label>
+      <label><input type="radio" name="threshold" value="other"> Something else (a cumulative total, an average, a final-year figure)</label>
+    </div>
+  </div>
+  <div class="q">
+    <label>How many metrics?</label>
+    <div class="opts">
+      <label><input type="radio" name="metrics" value="1" checked> One</label>
+      <label><input type="radio" name="metrics" value="2"> Two or more, each with its own target</label>
+    </div>
+  </div>
+  <div class="q">
+    <label>Any cap or floor on the tranche itself?</label>
+    <div class="opts">
+      <label><input type="radio" name="caps" value="no" checked> No — it is a single agreed amount</label>
+      <label><input type="radio" name="caps" value="yes"> Yes</label>
+    </div>
+  </div>
+  <div class="q">
+    <label>Can a third party sign the period figure?</label>
+    <div class="hint">A bank, an auditor, or a paying agent attesting the number — not the buyer's own statement.</div>
+    <div class="opts">
+      <label><input type="radio" name="attestor" value="yes" checked> Yes, or plausibly could</label>
+      <label><input type="radio" name="attestor" value="no"> No — only the buyer's books produce it</label>
+    </div>
+  </div>
+  <button type="submit">Check it</button>
+</form>
+
+<div id="out"></div>
+
+<footer>
+  The refusal rules here are the same ones in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/replay/compile.mjs">replay/compile.mjs</a>, which is what actually compiles a clause file and replays it on the ledger. Five clauses from the public record have been through it — one reproduces the payout that was actually made, four are refused, and the reasons are in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/validation.md">docs/validation.md</a>.
+  <br><br>
+  If this got your clause wrong, that is the most useful thing you could tell me — <a href="https://github.com/kimsabin725/earnout-settlement-ledger/issues/new">open an issue</a> or reply wherever you found this. The verdict line is all I need; no figures.
+</footer>
+</div>
+<script>
+// The same checks as replay/compile.mjs, asked in words instead of JSON. Kept in
+// one place mentally: if a rule changes there, it changes here.
+document.getElementById('f').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = (n) => document.querySelector(`input[name="${n}"]:checked`).value;
+  const reasons = [];
+  const tags = [];
+
+  if (v('trigger') === 'event') {
+    reasons.push('<b>The trigger is an event, not a figure.</b> The contract compares a number to a target. An event needs someone who signs that the event happened, and the attestation template carries a figure, not a fact. This is a second product, not a wider number — and it is the most common shape in the litigated record.');
+    tags.push('event trigger');
+  }
+  if (v('payout') === 'tiered') {
+    reasons.push('<b>The payout is tiered.</b> The tranche here either falls due in full or not at all. A sliding scale is a different computation and would have to be signed as such.');
+    tags.push('tiered payout');
+  }
+  if (v('payout') === 'formula') {
+    reasons.push('<b>The payout is a formula.</b> A multiple of the excess, or a pro-rated amount, is a computation the signed terms do not carry.');
+    tags.push('formula payout');
+  }
+  if (v('basis') === 'cumulative') {
+    reasons.push('<b>Periods are not independent.</b> A cumulative or catch-up basis needs the signed terms to carry running state, which they deliberately do not.');
+    tags.push('cumulative basis');
+  }
+  if (v('moving') === 'yes') {
+    reasons.push('<b>The target moves between periods.</b> The signed terms carry one target for every period, so a rising or stepped target is a different contract.');
+    tags.push('moving target');
+  }
+  if (v('threshold') === 'other') {
+    reasons.push('<b>The threshold is not a count of periods.</b> The only thing the contract counts is how many periods met the target.');
+    tags.push('non-count threshold');
+  }
+  if (v('metrics') !== '1') {
+    reasons.push('<b>More than one metric.</b> One metric per agreement. Two metrics means two agreements, or a metric defined as a formula before it reaches the ledger.');
+    tags.push('multiple metrics');
+  }
+  if (v('caps') === 'yes') {
+    reasons.push('<b>A cap or floor on the tranche.</b> The tranche amount is a single signed figure.');
+    tags.push('cap/floor');
+  }
+
+  // Not a refusal by the compiler, but the clause cannot be run honestly without it.
+  const noAttestor = v('attestor') === 'no';
+
+  const out = document.getElementById('out');
+  const fits = reasons.length === 0;
+  const verdict = fits
+    ? (noAttestor ? 'COMPILES, but no third party can sign the figure' : 'COMPILES')
+    : 'REFUSED — ' + tags.join(', ');
+
+  out.innerHTML =
+    (fits
+      ? `<h3 style="color:var(--yes)">Your clause is the shape this model holds.</h3>
+         <p>One metric, one fixed target per period, a tranche that either falls due or does not, and the test is how many periods hit. That is exactly what the signed terms carry, and a clause of this shape can be replayed against its own history to the payout that was actually made — which is what Prosser v. PharmaLogic did.</p>`
+      : `<h3 style="color:var(--no)">Refused, and here is why.</h3>
+         <p>This is a real answer, not a failure of the tool. A clause that does not fit is published with the reason rather than approximated — widening the model until everything passes would make the whole exercise meaningless.</p>`)
+    + (reasons.length ? '<ul><li>' + reasons.join('</li><li>') + '</li></ul>' : '')
+    + (noAttestor
+        ? `<p style="margin-top:12px"><b>One more thing, whatever the verdict.</b> If only the buyer's own books produce the figure, this model does less than it looks like it does: the contract enforces the computation, not the truthfulness of the input. It needs someone other than the buyer to sign the number.</p>`
+        : '')
+    + `<div class="verdict">${verdict}</div>
+       <p style="margin-top:10px;font-size:14px;color:var(--mute)">That line is the whole finding, and it contains nothing confidential. If it is wrong about your clause, sending it back is worth more to me than a meeting.</p>`;
+  out.style.display = 'block';
+  out.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+</script>
+</body></html>
