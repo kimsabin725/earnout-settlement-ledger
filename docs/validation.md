@@ -122,13 +122,16 @@ flattering, which is why it is written down here.
 
 ## What this changes
 
-**1. One real clause does replay, and it is the interesting kind.** PharmaLogic's earnout paid
-$6.6m if earnout-period EBITDA reached $7,000,000. The buyer's earnout statement reported
+**1. One real clause does replay, and it is the interesting kind.** PharmaLogic's earnout
+(Del. Super. CCLD, Jul 7 2026; figures and their limits set out in
+`replay/clauses/case-prosser-pharmalogic.json`) paid $6.6m if earnout-period EBITDA reached
+$7,000,000. The buyer's earnout statement reported
 $6,800,000 — $200,000 short — and nothing was paid. Expressed in the signed terms, the ledger
 reaches the same $0. That is the first end-to-end reproduction of a real earnout outcome on this
 model, and it took one clause file.
 
-**2. The flag would not have fired, and that is a real limitation.** The sellers allege the buyer
+**2. The flag would not have fired, and that is a real limitation.** Still in Prosser
+(Del. Super. CCLD), the sellers allege the buyer
 depressed the figure with higher bad debt, a new 401(k) match, sales bonuses and "more than
 $170,000 in additional expenses from switching to a new supplier". Only that last item is
 quantified in the public record. $6,800,000 + $170,000 is still below $7,000,000, so the contract's
@@ -163,8 +166,9 @@ honest and also a warning: life-sciences earnouts are routinely milestone-shaped
 metric-shaped, and serving them is a second attestation template, not a bigger `Decimal`. (How
 large that segment is, I have not measured and do not claim.)
 
-**6. SwervePay is the case this product cannot help with, and I would rather say so first.** The
-fight there was not about the post-closing computation. The buyers represented roughly $34bn of
+**6. SwervePay is the case this product cannot help with, and I would rather say so first.**
+In re SwervePay Acquisition (Del. Ch., Jul 31 2026; sourced in
+`replay/clauses/case-swervepay.json`), the fight was not about the post-closing computation. The buyers represented roughly $34bn of
 payment volume as the baseline the earnout would convert; the actual volume was about $5.2bn. A
 ledger that locks the rules at signing locks in a baseline that was already wrong at signing. The
 court reached it as fraud and awarded $75,692,297. Nothing in my design prevents a party from
