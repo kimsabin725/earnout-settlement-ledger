@@ -21,6 +21,10 @@ jobs:
         run: node replay/rules.test.mjs
       - name: real clause shapes route the way the harness routes them
         run: node replay/page.test.mjs
+      - name: no run of words shared with anything we read
+        run: node tools/check-borrowed.mjs
+      - name: every figure in the prose has a source beside it
+        run: node tools/check-claims.mjs
       - name: the replay page still matches the clause files
         run: |
           node docs/build-replay.mjs
