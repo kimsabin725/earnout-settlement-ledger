@@ -1,24 +1,83 @@
 # Validation — practitioner interviews
 
-Goal: evidence for the judging dimension "Validation" (user research / early testing). Target 3 conversations, 15–20 minutes each, by Oct 2.
+Goal: evidence for the judging dimension "Validation" (user research / early testing). Target 3
+conversations, 15–20 minutes each, by Oct 2.
+
+**What changed on Sep 20, and why this section was rewritten.** The plan was to ask a practitioner
+for nine figures from a closed earnout. That is a request a deal lawyer is right to refuse, and
+building outreach on it meant a plausible outcome of zero replies and zero evidence. But the
+question that matters — *would your clause have compiled at all* — never needed figures. The
+refusal rules read the **shape** of a clause, not its numbers, and they are ordinary JavaScript.
+So they now run in the reader's own browser:
+
+**<https://kimsabin725.github.io/earnout-settlement-ledger/clause-check.html>**
+
+Eight plain-English questions, no server, no analytics, no request of its own, no figures asked
+for. It reproduces the harness's verdict on all five public clauses already replayed. What comes
+back is one line — `REFUSED — tiered payout` — which contains nothing confidential and is the
+entire finding.
+
+The ask is now "spend two minutes, tell me if it got your clause wrong", not "send me your deal
+data". Whether that converts is itself the thing being tested.
 
 ## Who
-1. M&A advisor / boutique banker who has drafted an earnout (small–mid market).
-2. Escrow agent or law firm paralegal who has administered an earnout payout.
-3. Search-fund or founder-exit operator who has been on the receiving side of one.
 
-## Outreach (LinkedIn / email, EN)
-> Hi <name> — I'm building a small prototype that fixes an earnout's payout rules, data source and arbiter at signing, so post-closing metrics can't be re-argued later. I'd value 15 minutes of your experience with earnouts that went sideways — no pitch, just questions. Would <two slots> work?
+The structural survey below changed this list. Life-sciences earnouts are milestone-shaped by
+default, so a life-sciences lawyer is the wrong first call — the model cannot hold their clauses
+and both sides would learn nothing new. The clause most likely to fit comes from a lower middle
+market services or distribution deal, where the metric is EBITDA or revenue and the tranche is a
+cliff.
+
+1. Sell-side M&A advisor at a lower-middle-market boutique — services, distribution, light
+   manufacturing. The shape most likely to compile.
+2. Escrow or paying agent who has administered an earnout payout. They sit in the money flow,
+   already hold both signatures, and talk to strangers for a living.
+3. Search-fund or founder-exit operator who has been on the receiving end of one.
+
+Not on the list, deliberately: life-sciences and biotech deal counsel, until there is a second
+attestation template for event milestones.
+
+## Outreach (EN)
+
+> Hi <name> — I put an earnout on a ledger where the metric, the target and the arbiter are signed
+> once at closing and cannot be changed afterwards, and I need to know whether real clauses can be
+> expressed that way at all.
+>
+> I ran it against five earnout clauses from the Delaware record first, so I would not be asking
+> you to find out something I could find out myself. One — Prosser v. PharmaLogic — replays to the
+> payout that was actually made: nothing, on a $200,000 shortfall. **Four of the five could not be
+> expressed at all**, and I published the reason for each rather than widening the model until they
+> fit.
+>
+> Two minutes, if you have them: <link>. Eight questions about the shape of a clause — no figures,
+> nothing leaves your browser, no sign-up. If it refuses your clause, that one line is what I am
+> looking for, and it is worth more to me than a meeting.
+>
+> If it is wrong about your clause, that is the most useful thing anyone could send me.
 
 ## Outreach (KR)
-> 안녕하세요, <이름>님. M&A 언아웃(earnout)의 판정 기준·데이터 출처·중재인을 계약 시점에 고정해서 사후 분쟁을 줄이는 프로토타입을 만들고 있습니다. 언아웃이 꼬였던 경험을 15분만 여쭙고 싶습니다. 영업 아니고 질문만 드립니다. <두 시간대> 중 가능하실까요?
 
-## Questions (ask in this order, record answers verbatim)
+> 안녕하세요, <이름>님. M&A 언아웃의 판정 기준·데이터 출처·중재인을 계약 시점에 고정해 사후 분쟁을
+> 줄이는 원장을 만들고 있습니다. 제가 확인하지 못한 건 하나입니다 — **실제 조항이 그렇게 표현될 수
+> 있는가.**
+>
+> 먼저 델라웨어 공개 판례 5건으로 돌려봤습니다. 1건(Prosser v. PharmaLogic)은 실제 지급액을 그대로
+> 재현했고, **4건은 아예 표현이 불가능**했습니다. 모델을 넓혀 맞추는 대신 거부 사유를 그대로
+> 공개했습니다.
+>
+> 2분만 내주신다면: <링크>. 조항의 *형태*에 대한 8문항이고 **숫자는 묻지 않으며 입력한 내용이 브라우저
+> 밖으로 나가지 않습니다.** 거부가 나오면 그 한 줄이 제가 찾는 답입니다.
+>
+> 틀린 판정이 나왔다면, 그게 가장 값진 회신입니다.
+
+## Questions (only if they offer a call — the self-check is the primary ask)
+
 1. Last earnout you touched: what metric, how many periods, who computed the number?
 2. Where did the first disagreement come from — the number itself, the definition, or the timing?
 3. What did the seller actually see of the buyer's books? What did they want to see?
 4. Who would you trust to attest the number — the bank, an accountant, the buyer's CFO? Why?
-5. If the payout rules were locked at signing and the bank signed the account snapshot each quarter, what breaks? (Listen for: classification of one-offs, timing games, who pays the fee.)
+5. If the payout rules were locked at signing and the bank signed the account snapshot each quarter,
+   what breaks? (Listen for: classification of one-offs, timing games, who pays the fee.)
 6. Who pays for a service like this today — the deal, the buyer, the seller, the advisor?
 
 ## Findings
