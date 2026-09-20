@@ -8,20 +8,37 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const PORT = process.env.PORT || 8090;
-const API = "http://localhost:3975"; // app-provider participant JSON API
-const KC = "http://keycloak.localhost:8082/realms/AppProvider/protocol/openid-connect/token";
+
+// Two ledgers, one server. LocalNet is the default because that is what a clone
+// can run; DevNet is the shared HackCanton node, where we are a guest: the token
+// comes from the Console Wallet and the parties are provisioned for us, so
+// nothing here may assume it can mint either.
+//
+//   LocalNet  (default)  — credentials read out of the splice-onboarding container
+//   DevNet    LEDGER_API=https://<node>/  LEDGER_TOKEN=<jwt from Console Wallet>
+//             LEDGER_USER_ID=<user>  PARTY_EBUYER=…  PARTY_ESELLER=…  PARTY_EARBITER=…  PARTY_EBANK=…
+const API = process.env.LEDGER_API || "http://localhost:3975";
+const STATIC_TOKEN = process.env.LEDGER_TOKEN || null;
+const KC = process.env.LEDGER_TOKEN_URL || "http://keycloak.localhost:8082/realms/AppProvider/protocol/openid-connect/token";
 const DAR = join(dirname(fileURLToPath(import.meta.url)), "../ledger/.daml/dist/earnout-ledger-0.0.6.dar");
 const TPL = "#earnout-ledger:Earnout";
+const ROLES = ["EBuyer", "ESeller", "EArbiter", "EBank"];
+const PRESET_PARTIES = Object.fromEntries(
+  ROLES.map((r) => [r, process.env[`PARTY_${r.toUpperCase()}`]]).filter(([, v]) => v),
+);
 
 // ---- LocalNet 자격증명 (splice-onboarding 컨테이너 env에서 1회 취득) ----
+// A supplied token means we are not on LocalNet, and the container is not there
+// to ask — reading it would fail before the first request.
 const cenv = (k) => execFileSync("docker", ["exec", "splice-onboarding", "printenv", k]).toString().trim();
-const CLIENT_ID = cenv("AUTH_APP_PROVIDER_VALIDATOR_CLIENT_ID");
-const CLIENT_SECRET = cenv("AUTH_APP_PROVIDER_VALIDATOR_CLIENT_SECRET");
-const USER_ID = cenv("AUTH_APP_PROVIDER_VALIDATOR_USER_ID");
+const CLIENT_ID = STATIC_TOKEN ? null : cenv("AUTH_APP_PROVIDER_VALIDATOR_CLIENT_ID");
+const CLIENT_SECRET = STATIC_TOKEN ? null : cenv("AUTH_APP_PROVIDER_VALIDATOR_CLIENT_SECRET");
+const USER_ID = process.env.LEDGER_USER_ID || (STATIC_TOKEN ? null : cenv("AUTH_APP_PROVIDER_VALIDATOR_USER_ID"));
 
 // ---- 토큰 캐시 ----
 let tok = { v: null, exp: 0 };
 async function token() {
+  if (STATIC_TOKEN) return STATIC_TOKEN;
   if (tok.v && Date.now() < tok.exp - 30_000) return tok.v;
   const r = await fetch(KC, {
     method: "POST",
@@ -43,19 +60,29 @@ async function api(path, opts = {}) {
 // ---- 부트스트랩: DAR 업로드 + 파티 4개 + 권한 ----
 const PARTIES = {}; // role -> partyId
 async function bootstrap() {
+  // On a shared node the DAR is uploaded out of band and this will be refused;
+  // that is not an error worth stopping for, so it is reported and passed over.
   try { await api("/v2/packages", { method: "POST", ctype: "application/octet-stream", body: readFileSync(DAR) }); console.log("DAR uploaded"); }
   catch (e) { console.log("DAR upload:", e.status, e.message.slice(0, 120)); }
-  const existing = await api("/v2/parties");
-  const list = existing.partyDetails ?? existing;
-  const find = (hint) => (Array.isArray(list) ? list : []).map((p) => p.party).find((p) => p?.startsWith(hint + "::"));
-  for (const role of ["EBuyer", "ESeller", "EArbiter", "EBank"]) {
+
+  // Parties given to us are used as given. We only ever allocate our own.
+  const needAllocation = ROLES.filter((r) => !PRESET_PARTIES[r]);
+  let find = () => undefined;
+  if (needAllocation.length) {
+    const existing = await api("/v2/parties");
+    const list = existing.partyDetails ?? existing;
+    find = (hint) => (Array.isArray(list) ? list : []).map((p) => p.party).find((p) => p?.startsWith(hint + "::"));
+  }
+  for (const role of ROLES) {
+    if (PRESET_PARTIES[role]) { PARTIES[role] = PRESET_PARTIES[role]; continue; }
     let p = find(role);
     if (!p) p = (await api("/v2/parties", { method: "POST", body: { partyIdHint: role, displayName: role, identityProviderId: "" } })).partyDetails.party;
     PARTIES[role] = p;
     await api(`/v2/users/${USER_ID}/rights`, { method: "POST", body: { userId: USER_ID, identityProviderId: "", rights: [
       { kind: { CanActAs: { value: { party: p } } } }, { kind: { CanReadAs: { value: { party: p } } } } ] } }).catch(() => {});
   }
-  console.log("parties ready:", Object.keys(PARTIES).map((k) => k).join(", "));
+  console.log(`ledger: ${API}`);
+  console.log("parties ready:", ROLES.map((r) => `${r}${PRESET_PARTIES[r] ? "(given)" : ""}`).join(", "));
 }
 
 // ---- 커맨드 제출 ----

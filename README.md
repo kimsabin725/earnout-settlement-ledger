@@ -104,12 +104,32 @@ CashToken; the seller's has no raw basis. That is not UI filtering — it is the
 - Everything up to and including commit `Brief: drop draft marker` belongs to this phase.
 
 **Built during Season 3 (Sep 18 – Oct 9, 2026).** Each item below is tagged `[S3]` in the commit log and in `docs/s3-log.md`.
-- [ ] DevNet deployment on the shared HackCanton node — DAR upload, party provisioning, live transaction IDs.
+- [ ] DevNet deployment on the shared HackCanton node — DAR upload, party provisioning, live transaction IDs. *Prepared: the model is built with SDK 3.5.2, the version DevNet runs, and the demo server takes the ledger, the token and the four parties from the environment (`LEDGER_API`, `LEDGER_TOKEN`, `PARTY_*`) instead of assuming LocalNet. What is left needs the node itself.*
 - [ ] Per-party users on DevNet (today one validator user acts for all four parties — a demo shortcut). The privacy claim is then verifiable from the API: the seller's token cannot read the buyer's raw submission.
 - [x] The clause replay harness (`replay/`) — turns a written earnout clause into signed terms the contract can evaluate, then replays the clause's own historical schedule on the ledger and asserts the payout the parties settled on. A clause the signed terms cannot express is rejected with the reason instead of approximated. Two synthetic clauses replay green today; **no practitioner clause has been run through it yet**, and that is the open half of the success metric.
 - [ ] Bank attestation from a statement file (CSV) instead of a typed-in number, so the attestor signs what its own records say.
 - [ ] Validation interviews with earnout practitioners (M&A advisors / escrow agents / search-fund operators) — findings and changes recorded in `docs/validation.md`.
 - [ ] Journal, pitch deck, and pilot brief revisions from the above.
+
+## Running it against a ledger
+
+LocalNet is the default, because it is what a clone can bring up:
+
+```
+cd app && node ui/server.mjs          # reads its credentials out of the splice-onboarding container
+```
+
+The shared DevNet node is a guest arrangement — the token comes from the Console Wallet and the
+parties are provisioned for us — so nothing is minted locally:
+
+```
+LEDGER_API=https://<node>/ LEDGER_TOKEN=<jwt> LEDGER_USER_ID=<user> \
+PARTY_EBUYER=… PARTY_ESELLER=… PARTY_EARBITER=… PARTY_EBANK=… \
+node ui/server.mjs
+```
+
+A DAR upload that the shared node refuses is reported and stepped over, because there the DAR
+arrives out of band.
 
 ## License
 
