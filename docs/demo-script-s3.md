@@ -1,6 +1,6 @@
 # Demo video — Season 3 cut
 
-**Target 3:30, hard limit 5:00.** English narration, the user's own voice.
+**The silent cut runs 3:47; hard limit is 5:00.** English narration, the user's own voice.
 
 The Season 2 winners all shipped a video, and the one currently linked here was recorded on
 September 2 — sixteen days before Season 3 opened. A judge watching it sees none of the work this
@@ -10,6 +10,10 @@ put in front of it.
 **What needs recording, and what does not.** Only the ledger walkthrough needs Docker and LocalNet,
 and that footage already exists and is still accurate — the Daml model has not changed since
 August 29, the UI since September 2. Everything new is a terminal and two static pages.
+
+Timecodes below are the assembled cut's, measured — `~/work/hackcanton-video/build/earnout-s3-silent.mp4`.
+Each section is padded to its narration plus a fifth, because the first assembly matched on total
+length and came out short in five sections out of seven.
 
 | Shot | Source | Needs |
 |---|---|---|
@@ -21,7 +25,7 @@ August 29, the UI since September 2. Everything new is a terminal and two static
 
 ---
 
-## [0:00 – 0:18] The problem, in one breath
+## [0:00 – 0:30] The problem, in one breath
 
 *On screen: shot A, first frame — the three panels, paused.*
 
@@ -32,7 +36,7 @@ August 29, the UI since September 2. Everything new is a terminal and two static
 
 `[source: 24% — ABA Private Target Deal Points Study; 28% — SRS Acquiom. Both as cited in docs/validation.md.]`
 
-## [0:18 – 1:20] The ledger, working
+## [0:30 – 1:29] The ledger, working
 
 *Shot A, full. Use the uncaptioned file: the burned-in captions were written to carry the
 silent version, and narrating over them makes the viewer read and listen to two different sentences.*
@@ -56,14 +60,14 @@ silent version, and narrating over them makes the viewer read and listen to two 
 >
 > Three of four met. Finalization and settlement, one transaction.
 
-## [1:20 – 1:34] The turn
+## [1:29 – 1:46] The turn
 
 *Shot A freezes. Text over it: "That was a clause I wrote."*
 
 > That proves the mechanism on a clause I wrote myself, which proves very little. The question worth
 > asking is whether it holds a clause I did not write. So I went and got some.
 
-## [1:34 – 2:16] Clauses we did not write
+## [1:46 – 2:00] Clauses we did not write
 
 *Shot B: terminal. `./replay/run.sh`. Let it run — it takes eight seconds. Then shot C: the replay page,
 scrolled to the Prosser card.*
@@ -79,7 +83,7 @@ scrolled to the Prosser card.*
 
 `[source: Del. Super. CCLD, Jul 7 2026. Figures and their limits in replay/clauses/case-prosser-pharmalogic.json. The $0 is what the harness computes and what the ledger run reaches.]`
 
-## [2:16 – 2:52] And four that it could not hold
+## [2:00 – 2:52] And four that it could not hold
 
 *Shot C, scrolling through the refused cards.*
 
@@ -92,7 +96,7 @@ scrolled to the Prosser card.*
 
 `[source: the nine-case survey in docs/validation.md, each row naming where its structure came from. Say "in the public record" and not "in the market" — it is a litigated sample, and the document says why that matters.]`
 
-## [2:52 – 3:14] Ask it about your own clause
+## [2:52 – 3:22] Ask it about your own clause
 
 *Shot D: the self-check. Answer the milestone path live; the refusal and the "what happened to clauses
 shaped like yours" block appear.*
@@ -103,7 +107,7 @@ shaped like yours" block appear.*
 > the rules read shape, not numbers, so they run in the page. It answers in a line, and tells you
 > what happened to the public clauses that look like yours.
 
-## [3:14 – 3:34] What I am not claiming
+## [3:22 – 3:47] What I am not claiming
 
 *Shot E: a plain card, the text appearing line by line.*
 
