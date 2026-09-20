@@ -21,3 +21,7 @@ jobs:
         run: node replay/rules.test.mjs
       - name: real clause shapes route the way the harness routes them
         run: node replay/page.test.mjs
+      - name: the replay page still matches the clause files
+        run: |
+          node docs/build-replay.mjs
+          git diff --exit-code -- docs/replay.html

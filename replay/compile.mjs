@@ -17,7 +17,7 @@ const OUT_DIR = path.join(HERE, '..', 'tests', 'daml', 'Replay');
 // --- what the signed-terms model can express -------------------------------
 // EarnoutTerms fixes: one metric, a per-period target, a count of periods that
 // must be met, and one all-or-nothing tranche. Anything else has no home in the
-import { check } from './rules.mjs';
+import { check, evaluate } from './rules.mjs';
 
 
 // --- reference evaluation: exactly the model's arithmetic -------------------
@@ -33,18 +33,6 @@ function missingFigures(clause) {
   return gaps;
 }
 
-function evaluate(clause) {
-  const t = clause.terms, target = t.metricTarget;
-  const verdicts = clause.schedule.map((q) => {
-    const met = q.metricValue >= target;
-    const flagged = !met && q.metricValue + (q.oneOffOutflows ?? 0) >= target;
-    const resolution = q.dispute ? !!q.dispute.arbiterMet : null;
-    return { ...q, met, flagged, effectiveMet: resolution === null ? met : resolution };
-  });
-  const metCount = verdicts.filter((v) => v.effectiveMet).length;
-  const payout = metCount >= t.payout.requiredPeriodsMet ? t.payout.amount : 0;
-  return { verdicts, metCount, payout };
-}
 
 // --- Daml Script emission --------------------------------------------------
 const dec = (n) => (Number.isInteger(n) ? `${n}.0` : `${n}`);

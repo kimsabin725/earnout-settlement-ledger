@@ -35,7 +35,21 @@ Propose ─→ Accept (terms locked)
 
 Responsibility is deliberately **decomposed**: facts → attestor, rules → contract, interpretation → arbiter. No single party holds the ledger.
 
-## Why Canton (the transparent-chain test)
+## Why Canton
+
+Encrypt every figure and the leak is still there: that the buyer filed late, that the seller
+disputed a quarter, that the arbiter was called. In an earnout those events *are* the news. A
+dispute becoming visible tells a competitor the acquisition is going badly, tells the acquired
+company's staff the same thing, and hands the other side leverage in a negotiation that is still
+running. Cryptography can hide the number. It cannot hide that something happened, on a chain
+where every transaction is a public event.
+
+Canton has no global shared state: a transaction exists only for the parties named in it. The
+seller's dispute is a fact between buyer, seller and arbiter, and to everyone else it did not
+occur. **This is not a product that runs better on Canton. On a transparent chain it has no
+adopters at all — the deal team that would use it is precisely the one that cannot.**
+
+### The transparent-chain test
 
 *"If this moved to a globally transparent chain tomorrow, what breaks?"*
 
@@ -111,6 +125,7 @@ subject tag, which was dropped once the log itself became the record.
 - [x] The clause replay harness (`replay/`) — turns a written earnout clause into signed terms the contract can evaluate, then replays the clause's own historical schedule on the ledger and asserts the payout the parties settled on. A clause the signed terms cannot express is rejected with the reason instead of approximated. Two synthetic clauses replay green today; **no practitioner clause has been run through it yet**, and that is the open half of the success metric.
 - [ ] Bank attestation from a statement file (CSV) instead of a typed-in number, so the attestor signs what its own records say.
 - [x] A structural survey of the public record — nine Delaware earnout disputes classified by payout shape. Two of nine are the shape this model serves; four are event milestones and three are tiered or formula payouts. The sample is litigated rather than representative, and `docs/validation.md` says so rather than quoting the flattering reading.
+- [x] [**The replay, as a page**](https://kimsabin725.github.io/earnout-settlement-ledger/replay.html) — every clause file, period by period, with the payout this model computes next to the one the parties actually settled on. Generated from the clause files by the same rules the harness uses, so it cannot claim something `replay/run.sh` would not.
 - [x] [**A clause self-check**](https://kimsabin725.github.io/earnout-settlement-ledger/clause-check.html) — the same refusal rules as `replay/compile.mjs`, asked in words rather than JSON, running entirely in the reader's browser. It exists because the honest version of "would your clause have compiled?" was asking practitioners for figures from a closed deal, and the answer to that is no. It asks for none: the verdict depends on the shape, and the one-line verdict is the only thing worth sending back.
 - [ ] Validation interviews with earnout practitioners (M&A advisors / escrow agents / search-fund operators) — findings and changes recorded in `docs/validation.md`.
 - [ ] Journal, pitch deck, and pilot brief revisions from the above.
