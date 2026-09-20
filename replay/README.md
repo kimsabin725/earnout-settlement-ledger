@@ -76,12 +76,24 @@ work, and it is the part that decides whether the premise holds.
 
 ## SDK note
 
-The packages pin `sdk-version: 3.4.11`, which is what `daml install` can actually fetch from the
-public channel. The earlier pin was `3.5.2` (the Canton 3.x line), and that release is not
-downloadable from the public channel at all, so a clone could not be built as pinned — the pin is
-now the version this repository is actually built and tested with. The model targets LF 2.2 either
-way.
+The packages pin `sdk-version: 3.5.2` — the version the Canton quickstart uses, and the one this
+model is deployed with on DevNet. It is served by **dpm**, the Daml package manager, and not by the
+older `daml install` channel, which is why an earlier pin at 3.5.2 looked unbuildable: the wrong
+tool was being asked.
 
-One consequence worth knowing before a deployment: a DAR built by a different SDK is a different
-package on the ledger. Whatever is uploaded to DevNet should be the DAR built here, or rebuilt in
-the cn-quickstart environment and re-verified — not assumed interchangeable.
+`replay/run.sh` prefers dpm and falls back to the legacy assistant. The fallback compiles fine —
+the model targets LF 2.2 either way — but it is worth knowing what it costs:
+
+**the SDK that builds a DAR decides that DAR's package id, and a different package id is a
+different package on the ledger.** The replays run either way. The artifact uploaded to DevNet has
+to be the 3.5.2 build, not a fallback build that merely passes the same tests.
+
+For the record, the two are:
+
+| built with | package id |
+|---|---|
+| 3.5.2 (dpm, deployed) | `8ab2c2c3…86a3ba3` |
+| 3.4.11 (legacy assistant) | `e8ff9b5c…fff3531d` |
+
+Nothing in the app hardcodes either one: the UI addresses templates by package *name*
+(`#earnout-ledger:Earnout`), so a rebuild does not strand it.
