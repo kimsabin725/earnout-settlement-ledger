@@ -1,0 +1,12 @@
+{
+  "name": "earnout-settlement-ledger",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clauses": "node replay/compile.mjs",
+    "test:rules": "node replay/rules.test.mjs",
+    "test:page": "node replay/page.test.mjs",
+    "test": "npm run clauses && npm run test:rules && npm run test:page"
+  },
+  "devDependencies": { "playwright": "^1.48.0" }
+}
