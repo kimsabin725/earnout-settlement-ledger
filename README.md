@@ -103,7 +103,9 @@ CashToken; the seller's has no raw basis. That is not UI filtering — it is the
 - LocalNet end-to-end run on cn-quickstart (JSON Ledger API v2, OAuth2/Keycloak), 3-panel demo UI, 59-second demo recording.
 - Everything up to and including commit `Brief: drop draft marker` belongs to this phase.
 
-**Built during Season 3 (Sep 18 – Oct 9, 2026).** Each item below is tagged `[S3]` in the commit log and in `docs/s3-log.md`.
+**Built during Season 3 (Sep 18 – Oct 9, 2026).** Every commit from Sep 18 onward is listed in
+`docs/s3-log.md` with its hash and what it changed; the earliest of them also carry an `[S3]`
+subject tag, which was dropped once the log itself became the record.
 - [ ] DevNet deployment on the shared HackCanton node — DAR upload, party provisioning, live transaction IDs. *Prepared: the model is built with SDK 3.5.2, the version DevNet runs, and the demo server takes the ledger, the token and the four parties from the environment (`LEDGER_API`, `LEDGER_TOKEN`, `PARTY_*`) instead of assuming LocalNet. What is left needs the node itself.*
 - [ ] Per-party users on DevNet (today one validator user acts for all four parties — a demo shortcut). The privacy claim is then verifiable from the API: the seller's token cannot read the buyer's raw submission.
 - [x] The clause replay harness (`replay/`) — turns a written earnout clause into signed terms the contract can evaluate, then replays the clause's own historical schedule on the ledger and asserts the payout the parties settled on. A clause the signed terms cannot express is rejected with the reason instead of approximated. Two synthetic clauses replay green today; **no practitioner clause has been run through it yet**, and that is the open half of the success metric.
