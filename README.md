@@ -37,17 +37,20 @@ Responsibility is deliberately **decomposed**: facts → attestor, rules → con
 
 ## Why Canton
 
-Encrypt every figure and the leak is still there: that the buyer filed late, that the seller
-disputed a quarter, that the arbiter was called. In an earnout those events *are* the news. A
-dispute becoming visible tells a competitor the acquisition is going badly, tells the acquired
-company's staff the same thing, and hands the other side leverage in a negotiation that is still
-running. Cryptography can hide the number. It cannot hide that something happened, on a chain
-where every transaction is a public event.
+*"If this moved to a globally transparent chain tomorrow, what breaks?"* That question is the one
+worth asking about any application claiming it needs a particular chain, and it has three answers
+here. The first is the one encryption cannot reach.
 
-Canton has no global shared state: a transaction exists only for the parties named in it. The
-seller's dispute is a fact between buyer, seller and arbiter, and to everyone else it did not
-occur. **This is not a product that runs better on Canton. On a transparent chain it has no
-adopters at all — the deal team that would use it is precisely the one that cannot.**
+**Hide every figure and a transparent chain still publishes what happened.** That the buyer filed
+late. That a quarter was disputed. That the arbiter was called. In an earnout none of that is
+metadata: a visible dispute tells a competitor the acquisition is going badly and tells the other
+side that leverage has appeared, while the deal is still running. Canton has no global shared
+state — a transaction exists only for the parties named in it, so the dispute is a fact between
+buyer, seller and arbiter and to everyone else it did not occur.
+
+The logic would survive a move to a transparent chain. The willingness to sign would not, and
+every party this is built for is one whose reason for agreeing to an earnout at all is that the
+outcome is not yet public.
 
 ### The transparent-chain test
 
