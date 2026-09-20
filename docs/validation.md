@@ -181,17 +181,20 @@ measures it, in the only sample that is fully public: earnout disputes that reac
 court and were written up by law firms. Nine distinct cases, classified by the **structure of the
 payout**, not by who won.
 
-| Case | Court, date | Structure | Expressible in the signed terms? |
-|---|---|---|---|
-| Prosser v. PharmaLogic Holdings | Del. Super. CCLD, Jul 7 2026 | Per-period EBITDA against a fixed threshold, all-or-nothing | **Yes — replayed to the $0 actually paid** |
-| AM Buyer v. Argosy | Del. Super., Sep 3 2024 | "Earnout Period EBITDA", determined by an independent accountant | **Probably — but the figures are not public, so it has not been run** |
-| Himawan v. Cephalon | Del. Ch., Apr 30 2024 | Regulatory milestones for two drug indications | No — the trigger is an event |
-| Fortis Advisors v. Johnson & Johnson (Auris) | Del. Ch., Sep 4 2024 | Two commercial and eight regulatory milestones, up to $2.35bn | No — the trigger is an event |
-| SRS v. Alexion (Syntimmune) | Del. Ch., Sep 5 2024 | Eight milestones, up to $800m | No — the trigger is an event |
-| Fortis Advisors v. Medtronic | Del. Ch., Jul 29 2024 | $100m tied to sales and net revenue milestones | No — reported as milestone-shaped; whether any leg is a plain numeric threshold is not clear from the summaries, so it is counted as a milestone and flagged |
-| Lazard Tech. Partners v. QinetiQ | Del., Apr 23 2015 | "Up to $40m", tiered | No — tiered payout |
-| Winshall v. Viacom (Harmonix) | Del. Ch. 2011, aff'd 2013 | 3.5x the excess over a threshold that rises between periods | No — formula payout, moving target |
-| In re SwervePay Acquisition | Del. Ch., Jul 31 2026 | "Up to $53.75m" pro-rated against a payment-volume baseline | No — pro-rated formula |
+Every row's structure is taken from the source named beside it, and the wording of a deal's terms
+is the source's. Where a summary says a figure was not disclosed, none is supplied here.
+
+| Case | Court, date | Structure | Expressible? | Structure taken from |
+|---|---|---|---|---|
+| Prosser v. PharmaLogic Holdings | Del. Super. CCLD, Jul 7 2026 | Per-period EBITDA against a fixed threshold, all-or-nothing | **Yes — replayed to the $0 actually paid** | the clause file's own provenance, `replay/clauses/case-prosser-pharmalogic.json` |
+| AM Buyer v. Argosy | Del. Super., Sep 3 2024 | "Earnout Period EBITDA", determined by an independent accountant | **Probably — the figures are not public, so it has not been run** | Jones Day (Apr 2025) |
+| Himawan v. Cephalon | Del. Ch., Apr 30 2024 | Regulatory milestones for two drug indications | No — the trigger is an event | Jones Day (Apr 2025) |
+| Fortis Advisors v. Johnson & Johnson (Auris) | Del. Ch., Sep 4 2024 | Commercial and regulatory milestones | No — the trigger is an event | the clause file's own provenance, `replay/clauses/case-fortis-auris.json` |
+| SRS v. Alexion (Syntimmune) | Del. Ch., Sep 5 2024 | Eight milestones, up to $800m | No — the trigger is an event | Jones Day (Apr 2025); Mayer Brown (Jun 2025) |
+| Fortis Advisors v. Medtronic | Del. Ch., Jul 29 2024 | Milestone-based, $100m | No — **flagged**: the summaries describe it as milestone-shaped, and whether any leg is a plain numeric threshold is not clear from them. Counted as a milestone, which is the reading least favourable to this model | Jones Day (Apr 2025) |
+| Lazard Tech. Partners v. QinetiQ | Del., Apr 23 2015 | "Up to $40m", tiered | No — tiered payout | the clause file's own provenance |
+| Winshall v. Viacom (Harmonix) | Del. Ch. 2011, aff'd 2013 | 3.5x the excess over a threshold that rises between periods | No — formula payout, moving target | the clause file's own provenance |
+| In re SwervePay Acquisition | Del. Ch., Jul 31 2026 | "Up to $53.75m" pro-rated against a payment-volume baseline | No — pro-rated formula | the clause file's own provenance |
 
 **Two of nine.** The shape this model serves — one metric, one fixed target per period, a tranche
 that either falls due or does not — accounts for two of the nine public disputes, and only one of
@@ -219,7 +222,12 @@ clause most likely to fit comes from a services or distribution deal in the lowe
 where the metric is EBITDA or revenue and the tranche is a cliff. The outreach list is being
 rebuilt around that rather than around who is easiest to find.
 
-Sources for the five cases not already replayed above: Jones Day, "Earnouts in M&A Transactions:
-Recent Decisions From Delaware" (Apr 2025); Mayer Brown, "Chancery Court Applies Conditional
-Probability to Calculate Damages in Earnout Dispute" (Jun 2025). Figures are those the summaries
-state; where a summary says an amount is not disclosed, none is invented here.
+Full source titles: Jones Day, "Earnouts in M&A Transactions: Recent Decisions From Delaware"
+(Apr 2025); Mayer Brown, "Chancery Court Applies Conditional Probability to Calculate Damages in
+an Earnout Dispute" (Jun 2025). The four cases replayed above carry their own provenance inside
+`replay/clauses/`, at more length than a table row allows.
+
+One claim was looked at and dropped rather than used: a secondary write-up asserts that tiered
+payouts produce fewer disputes than cliffs, which would cut against this design. Potter Anderson's
+own note on drafting earnouts to manage litigation risk does not say it, so it is not repeated
+here. It remains an open question and a fair one to ask.

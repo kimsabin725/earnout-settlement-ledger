@@ -44,9 +44,10 @@ here. The first is the one encryption cannot reach.
 **Hide every figure and a transparent chain still publishes what happened.** That the buyer filed
 late. That a quarter was disputed. That the arbiter was called. In an earnout none of that is
 metadata: a visible dispute tells a competitor the acquisition is going badly and tells the other
-side that leverage has appeared, while the deal is still running. Canton has no global shared
-state — a transaction exists only for the parties named in it, so the dispute is a fact between
-buyer, seller and arbiter and to everyone else it did not occur.
+side that leverage has appeared, while the deal is still running. Canton does not keep one shared copy of the
+ledger. Buyer, seller, arbiter and bank each hold the transactions they are a party to and nothing
+else, so the disputed quarter is a fact the three of them share, and for anyone outside it never
+happened.
 
 The logic would survive a move to a transparent chain. The willingness to sign would not, and
 every party this is built for is one whose reason for agreeing to an earnout at all is that the
