@@ -46,4 +46,19 @@ export function check(clause) {
   return reasons;
 }
 
+// The reference arithmetic. The ledger run is the answer; this is the pre-check,
+// and the replay viewer shows its working.
+export function evaluate(clause) {
+  const t = clause.terms, target = t.metricTarget;
+  const verdicts = clause.schedule.map((q) => {
+    const met = q.metricValue >= target;
+    const flagged = !met && q.metricValue + (q.oneOffOutflows ?? 0) >= target;
+    const resolution = q.dispute ? !!q.dispute.arbiterMet : null;
+    return { ...q, met, flagged, effectiveMet: resolution === null ? met : resolution };
+  });
+  const metCount = verdicts.filter((v) => v.effectiveMet).length;
+  const payout = metCount >= t.payout.requiredPeriodsMet ? t.payout.amount : 0;
+  return { verdicts, metCount, payout };
+}
+
 export { SUPPORTED };

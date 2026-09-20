@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clauses this model was not written for</title>
+<style>
+ :root{--ink:#0E1A2B;--body:#2A3B52;--mute:#6B7C93;--rule:#DFE5EC;--accent:#1B4D8F;--panel:#F5F7FA;--bg:#fff;--no:#8A3324;--yes:#1D6B4F;--flag:#8A6D1A}
+ @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#EAF0F7;--body:#C2CFDE;--mute:#8A9BB0;--rule:#243347;--accent:#6FA8E0;--panel:#14202F;--bg:#0B131D;--no:#E2A08F;--yes:#7FC9A8;--flag:#D9BC72}}
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{background:var(--bg);color:var(--body);font:16px/1.6 -apple-system,"SF Pro Text","Helvetica Neue",Arial,sans-serif;padding:40px 16px 64px}
+ .w{max-width:860px;margin:0 auto}
+ .kick{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:700}
+ h1{font-size:32px;line-height:1.15;color:var(--ink);letter-spacing:-.02em;margin:10px 0 12px}
+ p.lede{font-size:18px}
+ .c{margin-top:26px;padding:20px;border:1px solid var(--rule);border-radius:4px;background:var(--panel)}
+ .c.refused{background:var(--bg)}
+ h3{font-size:19px;color:var(--ink)}
+ .label{font-size:14px;color:var(--mute);margin:2px 0 12px}
+ .badge{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;padding:3px 8px;border-radius:3px}
+ .badge.yes{color:var(--yes);border:1px solid var(--yes)}
+ .badge.no{color:var(--no);border:1px solid var(--no)}
+ .terms{margin:12px 0 10px;font-size:15px}
+ table{width:100%;border-collapse:collapse;margin:8px 0 12px;font-size:14.5px}
+ th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);border-bottom:1px solid var(--rule);padding:6px 8px}
+ td{padding:7px 8px;border-bottom:1px solid var(--rule)}
+ td.num{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+ td.met{color:var(--yes)} td.miss{color:var(--no)} td.flag{color:var(--flag)}
+ .result{font-size:16px;color:var(--ink);margin-top:10px}
+ .prov{margin-top:12px;font-size:13px;color:var(--mute)}
+ .c ul{margin:10px 0 0 20px} .c li{margin-bottom:8px;font-size:14.5px}
+ footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--rule);font-size:13px;color:var(--mute)}
+ a{color:var(--accent)}
+</style></head><body><div class="w">
+<div class="kick">Earnout Settlement Ledger · the replay</div>
+<h1>Clauses this model was not written for</h1>
+<p class="lede">The test that could kill this project: take earnout clauses <b>we did not write</b>, express them in the terms the contract signs, and replay each one's own history. If the ledger lands on the payout the parties actually made, the premise holds for that shape. If a clause cannot be expressed at all, that is published with the reason rather than approximated away. 3 of 8 compile.</p>
+<article class="c refused"><h3>Fortis Advisors v. Johnson &amp; Johnson (Auris Health)</h3><p class="label">milestones, not a metric</p>
+      <p class="badge no">Refused — not expressible in the signed terms</p>
+      <ul><li>the trigger is an event (FDA regulatory clearance, one of several milestones whose total count the sources report inconsistently), not a metric value. The contract compares a number to a target; an event needs a party who signs that the event happened, and the model has no template for that — MetricAttestation carries a figure, not a fact.</li></ul>
+      <p class="prov">PUBLIC RECORD, and the figures below are the ones two or more sources agree on. J&amp;J/Ethicon's acquisition of Auris Health: up to $2.35 billion in contingent consideration tied to FDA regulatory milestones for the iPlatform and Monarch devices (Arnold &amp; Porter advisory, Mar 2026), none of which was achieved after a change in the FDA's required clearance pathway. One named milestone is a $100 million 'Soft Tissue Ablation Milestone' (same source); an earlier summary describes it as a 510(k) clearance for lung tissue ablation. CAUTION: the litigation history is reported inconsistently across secondary sources — a post-trial Chancery award of more than $1 billion, a stipulated judgment of roughly $811 million in January 2026, and a Delaware Supreme Court decision of January 12, 2026 (No. 490,2024) that reversed the first-milestone ruling and vacated the related damages. This file does not rely on any of those figures; the only facts it uses are the milestone trigger and that no earnout was paid.</p></article>
+<article class="c refused"><h3>Lazard Technology Partners v. QinetiQ (Cyveillance)</h3><p class="label">'up to $40 million if revenues reached a certain level'</p>
+      <p class="badge no">Refused — not expressible in the signed terms</p>
+      <ul><li>payout type "tiered" — the tranche is all-or-nothing. Tiered, sliding, interpolated and formula payouts — the common shapes in the public record — are different computations and would have to be signed as such.</li></ul>
+      <p class="prov">PUBLIC RECORD. Lazard Tech. Partners, LLC v. QinetiQ N. Am. Operations LLC, No. 464,2014 (Del. Apr. 23, 2015). The opinion describes a $40 million payment at closing plus 'up to another $40 million if the company's revenues reached a certain level', and states that when the earn-out period ended the revenues had not reached the level required, so no earn-out was generated. The level itself and the actual revenues are not in the opinion.</p></article>
+<article class="c"><h3>Prosser v. PharmaLogic Holdings</h3><p class="label">a $200,000 EBITDA shortfall against a $6.6m cliff</p>
+    <p class="badge yes">Compiles — replayed on the ledger</p>
+    <p class="terms">Target <b>$7,000,000</b> per period · 1 period ·
+      1 must be met · tranche <b>$6,600,000</b></p>
+    <table><thead><tr><th>Period</th><th>Reported</th><th>One-off outflows</th><th>Verdict</th></tr></thead>
+      <tbody><tr><td>1</td><td class="num">$6,800,000</td>
+      <td class="num">$170,000</td>
+      <td class="miss">missed</td></tr></tbody></table>
+    <p class="result">0 of 1 met → this model pays <b>$0</b> · the parties settled on <b>$0</b> <span class="badge yes">MATCH</span></p>
+    <p class="prov">PUBLIC RECORD. Prosser v. PharmaLogic Holdings Corp., C.A. No. N25C-08-284 MAA CCLD (Del. Super. Ct., Complex Commercial Litigation Division, July 7, 2026), as summarised at delawarechancery.foxrothschild.com. Figures below are the ones the source states: a $7,000,000 EBITDA threshold, a $6,600,000 payment for EBITDA between $7,000,000 and $7,499,999, and a buyer-reported EBITDA of $6,800,000 — $200,000 short. Nothing here is invented, and nothing is added where the source is silent.</p></article>
+<article class="c refused"><h3>In re SwervePay Acquisition</h3><p class="label">'up to $53.75 million' against a payment-volume baseline that was itself contested</p>
+      <p class="badge no">Refused — not expressible in the signed terms</p>
+      <ul><li>payout type "sliding" — the tranche is all-or-nothing. Tiered, sliding, interpolated and formula payouts — the common shapes in the public record — are different computations and would have to be signed as such.</li><li>2 metrics — one metric per agreement. Two metrics means two agreements, or a metric defined as a formula before it reaches the ledger.</li></ul>
+      <p class="prov">PUBLIC RECORD. In re SwervePay Acquisition, LLC (Del. Ch., July 31, 2026). Per Holland &amp; Knight's summary of the opinion: sellers received 'approximately $9.9 million in cash and an additional $10 million in rollover equity at closing', with contingent consideration of 'up to $53.75 million tied to the Target's ability to convert the Platform's existing payments volume onto its own systems during the 2021 earnout period', hinging on 'a single, contested metric: the volume of payments actually flowing through the Platform's systems' — represented as $34 billion, actually about $5.2 billion. Award: $75,692,297 on fraud. Other summaries split the contingent consideration into two milestones ($43.75m and $25m) and larger equity figures; the discrepancy is left unresolved here rather than picked, because it does not change the outcome below.</p></article>
+<article class="c refused"><h3>Winshall v. Viacom (Harmonix)</h3><p class="label">3.5x the excess over a rising threshold, uncapped</p>
+      <p class="badge no">Refused — not expressible in the signed terms</p>
+      <ul><li>payout type "formula" — the tranche is all-or-nothing. Tiered, sliding, interpolated and formula payouts — the common shapes in the public record — are different computations and would have to be signed as such.</li><li>the target changes by period (32000000, 45000000) — the signed terms carry one target for every period, so a rising or stepped target is a different contract.</li></ul>
+      <p class="prov">PUBLIC RECORD. Winshall v. Viacom International Inc., Del. Ch. (2011), aff'd Del. (2013). The opinion states the selling stockholders 'became entitled to receive cash payments equal to three and a half times the excess, if any, over Gross Profit thresholds of $32 million in 2007 and $45 million in 2008.' The opinion does not disclose Harmonix's actual Gross Profit for either year or the amounts ultimately paid, so no figures are asserted here.</p></article>
+<article class="c refused"><h3>Synthetic: Cumulative Ratchet</h3><p class="label">Synthetic — a cumulative target with a sliding payout, which this ledger cannot express</p>
+      <p class="badge no">Refused — not expressible in the signed terms</p>
+      <ul><li>periodBasis "cumulative" — the contract evaluates each period against a fixed target; a cumulative or catch-up basis would need the signed terms to carry running state, which they deliberately do not.</li><li>payout type "sliding" — the tranche is all-or-nothing. Tiered, sliding, interpolated and formula payouts — the common shapes in the public record — are different computations and would have to be signed as such.</li><li>caps/floors on the tranche — not expressible; the tranche amount is a single signed figure.</li><li>schedule has 2 periods but the terms declare 8. The contract requires every period reported, in order, exactly once.</li></ul>
+      <p class="prov">SYNTHETIC. Written deliberately outside the signed-terms model. If a practitioner's real clause looks like this, the harness must say so instead of quietly approximating it.</p></article>
+<article class="c"><h3>Synthetic: Missed Earnout</h3><p class="label">Synthetic — the earnout genuinely missed, and the ledger must close it unpaid</p>
+    <p class="badge yes">Compiles — replayed on the ledger</p>
+    <p class="terms">Target <b>$80,000,000</b> per period · 4 periods ·
+      3 must be met · tranche <b>$400,000,000</b></p>
+    <table><thead><tr><th>Period</th><th>Reported</th><th>One-off outflows</th><th>Verdict</th></tr></thead>
+      <tbody><tr><td>1</td><td class="num">$84,000,000</td>
+      <td class="num">—</td>
+      <td class="met">met</td></tr><tr><td>2</td><td class="num">$62,000,000</td>
+      <td class="num">$4,000,000</td>
+      <td class="miss">missed</td></tr><tr><td>3</td><td class="num">$58,000,000</td>
+      <td class="num">$1,000,000</td>
+      <td class="miss">missed</td></tr><tr><td>4</td><td class="num">$90,000,000</td>
+      <td class="num">—</td>
+      <td class="met">met</td></tr></tbody></table>
+    <p class="result">2 of 4 met → this model pays <b>$0</b> · the parties settled on <b>$0</b> <span class="badge yes">MATCH</span></p>
+    <p class="prov">SYNTHETIC. Invented figures. Included because a harness that can only reproduce payouts is not a test.</p></article>
+<article class="c"><h3>Synthetic: Suppressed Period</h3><p class="label">Synthetic — a missed period that a one-off outflow would have carried, resolved by the named arbiter</p>
+    <p class="badge yes">Compiles — replayed on the ledger</p>
+    <p class="terms">Target <b>$80,000,000</b> per period · 4 periods ·
+      3 must be met · tranche <b>$400,000,000</b></p>
+    <table><thead><tr><th>Period</th><th>Reported</th><th>One-off outflows</th><th>Verdict</th></tr></thead>
+      <tbody><tr><td>1</td><td class="num">$92,000,000</td>
+      <td class="num">—</td>
+      <td class="met">met</td></tr><tr><td>2</td><td class="num">$85,000,000</td>
+      <td class="num">—</td>
+      <td class="met">met</td></tr><tr><td>3</td><td class="num">$51,000,000</td>
+      <td class="num">$30,000,000</td>
+      <td class="met">disputed → arbiter allowed it</td></tr><tr><td>4</td><td class="num">$79,000,000</td>
+      <td class="num">—</td>
+      <td class="miss">missed</td></tr></tbody></table>
+    <p class="result">3 of 4 met → this model pays <b>$400,000,000</b> · the parties settled on <b>$400,000,000</b> <span class="badge yes">MATCH</span></p>
+    <p class="prov">SYNTHETIC. The fact pattern is the recurring one in Delaware earnout litigation (buyer-controlled cost allocation in a measurement period); every figure is invented to exercise the harness. No practitioner clause is reproduced here.</p></article>
+<footer>
+Generated from <a href="https://github.com/kimsabin725/earnout-settlement-ledger/tree/main/replay/clauses">replay/clauses/</a> by <code>docs/build-replay.mjs</code>, using the same rules the harness uses — so this page cannot claim something <code>replay/run.sh</code> would not. The arithmetic here is the pre-check; the ledger run is the answer, and it is in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/validation.md">docs/validation.md</a>.
+<br><br>
+Wondering about your own clause? <a href="clause-check.html">Two minutes, nothing leaves your browser.</a>
+</footer>
+</div></body></html>
