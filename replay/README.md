@@ -92,8 +92,16 @@ For the record, the two are:
 
 | built with | package id |
 |---|---|
-| 3.5.2 (dpm, deployed) | `8ab2c2c3…86a3ba3` |
-| 3.4.11 (legacy assistant) | `e8ff9b5c…fff3531d` |
+| 3.5.2 (dpm, deployed) | `8ab2c2c315565d0541a093ab38c51b0b53dc8c2ce889fb484a54c5c7886a3ba3` |
+| 3.4.11 (legacy assistant) | `e8ff9b5c0b3fa063eac2b145ad8c6f566c03edd5f0d4b4a44efd8d5efff3531d` |
+
+The 3.5.2 build is reproducible: a fresh clone of this repository produces a DAR that is
+byte-identical to the one built here.
+
+```
+$ shasum -a 256 ledger/.daml/dist/earnout-ledger-0.0.6.dar
+0390e7c1b1e1dfdc7b4535f484dc4f7bb747b065054913255c2494b40a8416fe
+```
 
 Nothing in the app hardcodes either one: the UI addresses templates by package *name*
 (`#earnout-ledger:Earnout`), so a rebuild does not strand it.
