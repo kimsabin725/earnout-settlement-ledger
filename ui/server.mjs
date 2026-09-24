@@ -62,8 +62,13 @@ const PARTIES = {}; // role -> partyId
 async function bootstrap() {
   // On a shared node the DAR is uploaded out of band and this will be refused;
   // that is not an error worth stopping for, so it is reported and passed over.
-  try { await api("/v2/packages", { method: "POST", ctype: "application/octet-stream", body: readFileSync(DAR) }); console.log("DAR uploaded"); }
-  catch (e) { console.log("DAR upload:", e.status, e.message.slice(0, 120)); }
+  if (STATIC_TOKEN) {
+    // A tenant token cannot upload packages; on the shared node the DAR goes through the Console.
+    console.log("DAR: not uploaded from here (supplied token) — expected to be on the node already");
+  } else {
+    try { await api("/v2/packages", { method: "POST", ctype: "application/octet-stream", body: readFileSync(DAR) }); console.log("DAR uploaded"); }
+    catch (e) { console.log("DAR upload:", e.status, e.message.slice(0, 120)); }
+  }
 
   // Parties given to us are used as given. We only ever allocate our own.
   const needAllocation = ROLES.filter((r) => !PRESET_PARTIES[r]);
