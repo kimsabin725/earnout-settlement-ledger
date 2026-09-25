@@ -111,9 +111,9 @@ shaped like yours" block appear.*
 
 *Shot E: a plain card, the text appearing line by line.*
 
-> No practitioner has run their own clause through this yet. This runs on LocalNet; DevNet is still
-> open. And a clause built on a baseline that was already false at signing is not something a ledger
-> can fix.
+> No practitioner has run their own clause through this yet. This footage is LocalNet; the same model
+> now runs on the shared DevNet node, and the update ids are in the repository. And a clause built on a
+> baseline that was already false at signing is not something a ledger can fix.
 >
 > Everything else can be checked without me. Clone it, and the replays run.
 
