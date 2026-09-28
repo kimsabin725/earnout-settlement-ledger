@@ -59,6 +59,18 @@ Active contracts per party at ledger end 1060998, read with that party alone in 
 
 The bank sees one contract; the buyer, seller and arbiter see different subsets of the same deal. That difference is the privacy claim of the model, and it is now observable on a node we do not operate.
 
+## The node's own record
+
+The organisers expose the participant's pod logs in Grafana (https://grafana.participant.hackcanton-01.devnet.naas.noders.services/, readable without signing in). Searching that dashboard for an update id from the table above returns the line the indexer wrote when it stored the transaction — so the figures on this page can be checked against the node rather than against our client.
+
+The first and the last update of the run, captured 2026-09-28 with the time range set to the evening of the 24th:
+
+![Grafana: the node storing offset 1060874 — the EarnoutProposal, commandId ui-propose](devnet/grafana-open.png)
+
+![Grafana: the node storing offset 1060976 — the settlement, commandId ui-settle](devnet/grafana-settle.png)
+
+Both lines carry `workflowId = earnout-ui` and a `commandId` prefixed by the UI action that submitted them, and their `recordTime` (10:34:15Z and 10:35:30Z) brackets the 75 seconds the lifecycle took on the shared node. The ledger user id in the `completion` block is blanked in the screenshots; it is the tenant's, not the model's.
+
 ## Reproduce
 
 ```bash
