@@ -21,12 +21,11 @@
 </style></head><body><div class="w">
  <div class="kick">HackCanton Season 3 · RWA &amp; Business Workflows</div>
  <h1>Earnout Settlement Ledger — demo</h1>
- <p class="lede">A complete earnout lifecycle on Canton: four parties, rules locked at signing, and a forged verdict that fails on the ledger rather than in a courtroom.</p>
- <video controls preload="metadata" playsinline poster="demo/captions/c00.png">
-   <source src="demo/earnout-demo-captioned.mp4" type="video/mp4">
-   <source src="demo/earnout-demo.webm" type="video/webm">
+ <p class="lede">A complete earnout lifecycle on Canton — four parties, rules locked at signing, a forged verdict that fails on the ledger — and then the harder test: earnout clauses from the public record that I did not write, replayed against their own history.</p>
+ <video controls preload="metadata" playsinline poster="demo/poster-s3.jpg">
+   <source src="demo/earnout-demo-s3.mp4" type="video/mp4">
  </video>
- <p class="cap">59 seconds · captions burned in · recorded against LocalNet. The DevNet re-recording is listed as Season 3 work in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/s3-log.md">docs/s3-log.md</a>.</p>
+ <p class="cap">3 min 47 s · English captions. The ledger walkthrough was recorded on LocalNet; the same model now runs on the shared DevNet node, with the update ids in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/devnet.md">docs/devnet.md</a>.</p>
  <h2>What you are watching</h2>
  <ol>
    <li><b>Signing.</b> Buyer proposes metric definitions, thresholds, evaluation logic, attestor and arbiter. Seller accepts. Both signatures are required for the contract to exist.</li>
@@ -34,6 +33,9 @@
    <li><b>A contested quarter.</b> Q3 lands below target, but the ledger flags it because a one-off outflow would have covered the gap. The seller disputes; the arbiter named at signing resolves it and the reasoning is recorded on-ledger — not a forum chosen after the argument started.</li>
    <li><b>The attack.</b> After a missed quarter the buyer tries to write a favorable verdict alone. A verdict is a dual-signatory contract, so the participant node rejects the submission — the error shown on screen is the ledger&rsquo;s, not the app&rsquo;s. (Moving the thresholds is not even attemptable: the model has no choice that amends signed terms.)</li>
    <li><b>Settlement.</b> Three of four quarters met, so finalization creates the obligation and <code>Settle</code> moves the tranche and closes the contract in one transaction.</li>
+   <li><b>A clause I did not write.</b> Proving the mechanism on my own clause proves little, so five earnout clauses from the Delaware record are replayed against their own history. In <i>Prosser v. PharmaLogic</i> — $6.6M if EBITDA reached $7M, buyer reported $6.8M, nothing paid — the ledger reaches the same zero without ever seeing the case.</li>
+   <li><b>What it refuses.</b> Four of the five cannot be expressed at all — tiered payouts, a rising target, FDA milestones that are events rather than figures — and each is published with its reason. Of nine earnout disputes in the public record, two are the shape this model holds.</li>
+   <li><b>The self-check.</b> Eight questions about the shape of a clause, no figures, nothing leaving the browser: would yours have compiled, and what happened to the public clauses that look like it.</li>
  </ol>
  <div class="links">
    <a class="btn" href="https://github.com/kimsabin725/earnout-settlement-ledger">Source code</a>
@@ -41,7 +43,7 @@
    <a class="btn" href="replay.html">Clauses we did not write, replayed</a>
    <a class="btn" href="clause-check.html">Is your earnout arithmetic, or judgement?</a>
    <a class="btn" href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/business-brief.md">Business brief</a>
-   <a class="btn" href="demo/earnout-demo-captioned.mp4">Download the video</a>
+   <a class="btn" href="demo/earnout-demo-s3.mp4">Download the video</a>
  </div>
  <footer>Daml model 0.0.6 · 21 transactions, 5 must-fail scenarios: <code>dpm test --package-root tests</code></footer>
 </div></body></html>
