@@ -2,7 +2,7 @@
 
 **Tamper-proof earnout adjudication on Canton — the judgment logic, data source, and arbiter are locked at signing, and neither side can change them afterward.**
 
-Built for HackCanton Season 3 (RWA & Business Workflows track).
+Built solo for HackCanton Season 3 (RWA & Business Workflows track). Submitted 2026-10-05; judging is in progress.
 
 ## The problem
 
@@ -79,9 +79,12 @@ Run them yourself: `dpm test --package-root tests` (21 transactions, 5 must-fail
 
 ```
 ledger/   Daml templates (earnout-ledger) — the state machine, no test deps
-tests/    daml-script scenario incl. adversarial cases (earnout-tests)
+tests/    daml-script scenario incl. adversarial cases (earnout-tests), plus the replay scripts
 ui/       zero-dependency Node backend (JSON Ledger API v2) + 3-pane demo UI
 scripts/  end-to-end scenario against LocalNet via curl (backend reference)
+replay/   clause replay harness — compiles a written clause into signed terms and replays it
+docs/     demo page, replay page, clause self-check, DevNet record, validation notes, pitch deck
+tools/    CI checks for borrowed wording and unsourced figures
 ```
 
 ## Running it
@@ -118,28 +121,28 @@ CashToken; the seller's has no raw basis. That is not UI filtering — it is the
 
 **Pre-hackathon foundation (Aug 2026, before Season 3 opened).** Disclosed per the hackathon rules on pre-existing code.
 - Daml model `0.0.6` (4-party workflow; 5 adversarial scenarios asserted to fail under `submitMustFail`, plus 2 that the model cannot express at all).
-- LocalNet end-to-end run on cn-quickstart (JSON Ledger API v2, OAuth2/Keycloak), 3-panel demo UI, 59-second demo recording.
+- LocalNet end-to-end run on cn-quickstart (JSON Ledger API v2, OAuth2/Keycloak), 3-panel demo UI, and a first 59-second demo recording (replaced in Season 3 by the 3:47 cut in `docs/demo/earnout-demo-s3.mp4`).
 - Everything up to and including commit `Brief: drop draft marker` belongs to this phase.
 
-**Built during Season 3 (Sep 18 – Oct 9, 2026).** Every commit from Sep 18 onward is listed in
+**Built during Season 3 (Sep 18 – Oct 10, 2026).** Every commit from Sep 18 onward is listed in
 `docs/s3-log.md` with its hash and what it changed; the earliest of them also carry an `[S3]`
 subject tag, which was dropped once the log itself became the record.
 - [x] DevNet deployment on the shared HackCanton node — done 2026-09-24: `earnout-ledger` 0.0.6 (package id `8ab2c2c315565d05…`) uploaded to `hackcanton-devnet-3`, four parties allocated in the tenant namespace, and the full lifecycle run end to end for 15 ledger updates (offsets 1060874–1060976). Update ids, per-party visibility and the exact environment are in [`docs/devnet.md`](docs/devnet.md), together with the node's own Grafana log lines for the first and last update.
-- [ ] Per-party users on DevNet (today one validator user acts for all four parties — a demo shortcut). The privacy claim is then verifiable from the API: the seller's token cannot read the buyer's raw submission.
-- [x] The clause replay harness (`replay/`) — turns a written earnout clause into signed terms the contract can evaluate, then replays the clause's own historical schedule on the ledger and asserts the payout the parties settled on. A clause the signed terms cannot express is rejected with the reason instead of approximated. Two synthetic clauses replay green today; **no practitioner clause has been run through it yet**, and that is the open half of the success metric.
-- [ ] Bank attestation from a statement file (CSV) instead of a typed-in number, so the attestor signs what its own records say.
+- [ ] Not done in the season: per-party users on DevNet (one validator user acts for all four parties — a demo shortcut). The privacy claim is then verifiable from the API: the seller's token cannot read the buyer's raw submission.
+- [x] The clause replay harness (`replay/`) — turns a written earnout clause into signed terms the contract can evaluate, then replays the clause's own historical schedule on the ledger and asserts the payout the parties settled on. A clause the signed terms cannot express is rejected with the reason instead of approximated. Five clauses from the public record have been run: Prosser v. PharmaLogic compiles and replays to the payout that was actually made, and the other four are refused with the reason (`replay/README.md`, `docs/validation.md`). **No clause from a practising lawyer has been run through it yet**, and that is the open half of the success metric.
+- [ ] Not done in the season: bank attestation from a statement file (CSV) instead of a typed-in number, so the attestor signs what its own records say.
 - [x] A structural survey of the public record — nine Delaware earnout disputes classified by payout shape. Two of nine are the shape this model serves; four are event milestones and three are tiered or formula payouts. The sample is litigated rather than representative, and `docs/validation.md` says so rather than quoting the flattering reading.
 - [x] [**The replay, as a page**](https://kimsabin725.github.io/earnout-settlement-ledger/replay.html) — every clause file, period by period, with the payout this model computes next to the one the parties actually settled on. Generated from the clause files by the same rules the harness uses, so it cannot claim something `replay/run.sh` would not.
 - [x] [**A clause self-check**](https://kimsabin725.github.io/earnout-settlement-ledger/clause-check.html) — the same refusal rules as `replay/compile.mjs`, asked in words rather than JSON, running entirely in the reader's browser. It exists because the honest version of "would your clause have compiled?" was asking practitioners for figures from a closed deal, and the answer to that is no. It asks for none: the verdict depends on the shape, and the one-line verdict is the only thing worth sending back.
-- [ ] Validation interviews with earnout practitioners (M&A advisors / escrow agents / search-fund operators) — findings and changes recorded in `docs/validation.md`.
-- [ ] Journal, pitch deck, and pilot brief revisions from the above.
+- [ ] Not done in the season: validation interviews with earnout practitioners (M&A advisors / escrow agents / search-fund operators). Outreach went out and no reply had come back by the deadline; `docs/validation.md` records that rather than a result.
+- [ ] Not done in the season: journal, pitch deck, and pilot brief revisions from those interviews. The pitch deck in `docs/pitch/` is the Sep 18 version and predates the DevNet run and the 3:47 video; this README is the current status.
 
 ## Running it against a ledger
 
 LocalNet is the default, because it is what a clone can bring up:
 
 ```
-cd app && node ui/server.mjs          # reads its credentials out of the splice-onboarding container
+node ui/server.mjs                    # reads its credentials out of the splice-onboarding container
 ```
 
 The shared DevNet node is a guest arrangement — the token comes from the Console Wallet and the

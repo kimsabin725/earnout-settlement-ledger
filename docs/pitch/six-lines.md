@@ -3,7 +3,7 @@
 Written Sep 18, 2026, after five public clauses went through `replay/`. Keep these in sync with
 `docs/validation.md` — if a claim here is not true there, this file is the one that is wrong.
 
-**Problem** — In a private-company earnout the buyer owns the books, the metric computation and the timing after closing, so the seller cannot verify the number and the buyer cannot prove it, and 28% of these end in dispute at roughly 21 cents on the promised dollar.
+**Problem** — In a private-company earnout the buyer owns the books, the metric computation and the timing after closing, so the seller cannot verify the number and the buyer cannot prove it, and 28% of these end in dispute (SRS Acquiom). Separately, earnouts pay out roughly 21 cents on the dollar of their stated potential (SRS Acquiom, Kroll).
 
 **ICP** — Sell-side M&A advisors and the deal lawyers who draft the earnout clause in the US and Western European mid-market, EUR/USD 20-80m enterprise value, five or more earnout deals a year.
 

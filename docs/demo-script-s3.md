@@ -1,17 +1,17 @@
 # Demo video — Season 3 cut
 
-**The silent cut runs 3:47; hard limit is 5:00.** English narration, the user's own voice.
+**The submitted cut runs 3:47 with English captions and no narration; hard limit is 5:00.**
+The audio notes further down were written for a narrated take that was not used.
 
-The Season 2 winners all shipped a video, and the one currently linked here was recorded on
-September 2 — sixteen days before Season 3 opened. A judge watching it sees none of the work this
-hackathon was for. This cut fixes that: the ledger footage stays, and everything built since is
-put in front of it.
+The earlier video was recorded on September 2, sixteen days before Season 3 opened, and showed
+none of the Season 3 work. This cut keeps the ledger footage and puts everything built since in
+front of it.
 
 **What needs recording, and what does not.** Only the ledger walkthrough needs Docker and LocalNet,
 and that footage already exists and is still accurate — the Daml model has not changed since
 August 29, the UI since September 2. Everything new is a terminal and two static pages.
 
-Timecodes below are the assembled cut's, measured — `~/work/hackcanton-video/build/earnout-s3-silent.mp4`.
+Timecodes below are the assembled cut's, measured from the submitted file (`docs/demo/earnout-demo-s3.mp4`).
 Each section is padded to its narration plus a fifth, because the first assembly matched on total
 length and came out short in five sections out of seven.
 
@@ -130,5 +130,5 @@ shaped like yours" block appear.*
 - **Shot D**: answer the *milestone* path, not the compiling one. A refusal explains more than a pass,
   and it is the case four of five real clauses land in.
 - **Audio**: one take per section, recorded separately, so a fluffed line costs one section.
-- Replace the Demo material's link once the cut is up; the existing 59-second file stays in the
-  repository as what it is, the pre-hackathon walkthrough.
+- The demo page links this cut (done 2026-10-04); the 59-second file stays in the repository as the
+  pre-hackathon walkthrough.
