@@ -124,8 +124,8 @@ CashToken; the seller's has no raw basis. That is not UI filtering — it is the
 - LocalNet end-to-end run on cn-quickstart (JSON Ledger API v2, OAuth2/Keycloak), 3-panel demo UI, and a first 59-second demo recording (replaced in Season 3 by the 3:47 cut in `docs/demo/earnout-demo-s3.mp4`).
 - Everything up to and including commit `Brief: drop draft marker` belongs to this phase.
 
-**Built during Season 3 (Sep 18 – Oct 10, 2026).** Every commit from Sep 18 onward is listed in
-`docs/s3-log.md` with its hash and what it changed; the earliest of them also carry an `[S3]`
+**Built during Season 3 (Sep 18 – Oct 10, 2026).** The Season 3 commits that changed the model, the harness, the demo or the deployment are listed in
+`docs/s3-log.md` with their hash and what they changed (`git log` is the complete record); the earliest of them also carry an `[S3]`
 subject tag, which was dropped once the log itself became the record.
 - [x] DevNet deployment on the shared HackCanton node — done 2026-09-24: `earnout-ledger` 0.0.6 (package id `8ab2c2c315565d05…`) uploaded to `hackcanton-devnet-3`, four parties allocated in the tenant namespace, and the full lifecycle run end to end for 15 ledger updates (offsets 1060874–1060976). Update ids, per-party visibility and the exact environment are in [`docs/devnet.md`](docs/devnet.md), together with the node's own Grafana log lines for the first and last update.
 - [ ] Not done in the season: per-party users on DevNet (one validator user acts for all four parties — a demo shortcut). The privacy claim is then verifiable from the API: the seller's token cannot read the buyer's raw submission.
