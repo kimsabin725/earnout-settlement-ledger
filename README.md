@@ -1,16 +1,32 @@
 # Earnout Settlement Ledger
 
-**Tamper-proof earnout adjudication on Canton — the judgment logic, data source, and arbiter are locked at signing, and neither side can change them afterward.**
+**Problem.** After closing, the buyer keeps the books an earnout pays on; the seller cannot verify them, and disputes are argued years later over records neither side agreed on.\
+**Built.** A four-party Canton workflow (buyer, seller, bank attestor, arbiter): terms, data source and arbiter are locked at signing, each quarter is adjudicated on-ledger, and payment settles atomically with closure.\
+**Proved.** A clause from the public record (Prosser v. PharmaLogic) replays to the payout actually made and four others are refused with the reason; the full lifecycle ran on the shared DevNet node (15 ledger updates, [`docs/devnet.md`](docs/devnet.md)).
+
+▶ Demo video: VIDEO_URL_PLACEHOLDER (until then it plays on the [demo page](https://kimsabin725.github.io/earnout-settlement-ledger/))\
+▶ Live replay page: https://kimsabin725.github.io/earnout-settlement-ledger/replay.html — static, runs in the browser; the full 3-panel UI needs a ledger ([Running it](#running-it))
+
+| | |
+|---|---|
+| [Demo page](https://kimsabin725.github.io/earnout-settlement-ledger/) | video, walkthrough, links |
+| [Replay page](https://kimsabin725.github.io/earnout-settlement-ledger/replay.html) | five public-record clauses, period by period |
+| [Clause self-check](https://kimsabin725.github.io/earnout-settlement-ledger/clause-check.html) | would your clause compile? runs in your browser |
+| [DevNet record](docs/devnet.md) | update ids, per-party visibility, node logs |
+
+Daml model 0.0.6 · `dpm test --package-root tests` (21 transactions, 5 must-fail scenarios) · Apache-2.0
+
+## Details
 
 Built solo for HackCanton Season 3 (RWA & Business Workflows track). Submitted 2026-10-05; judging is in progress.
 
-## The problem
+### The problem
 
 - **24%** of private M&A deals use earnouts (deferred payments tied to post-closing performance; ABA Private Target Deal Points Study) — and **28% of them end in dispute** (SRS Acquiom). Earnouts pay out only ~21 cents on the dollar of their stated potential (SRS Acquiom, Kroll).
 - The root cause: **post-closing books are controlled by the buyer.** The seller cannot verify the numbers, and in litigation the seller bears the burden of proof over books the buyer keeps.
 - The classic dispute — *"that one-off expense was operationally necessary"* vs. *"you suppressed earnings to avoid the payout"* — is argued years later over records neither side agreed on at the time.
 
-## What this does
+### What this does
 
 A four-party workflow on Canton that removes the trust gap by construction:
 
@@ -35,33 +51,21 @@ Propose ─→ Accept (terms locked)
 
 Responsibility is deliberately **decomposed**: facts → attestor, rules → contract, interpretation → arbiter. No single party holds the ledger.
 
-## Why Canton
+### Why Canton
 
-*"If this moved to a globally transparent chain tomorrow, what breaks?"* That question is the one
-worth asking about any application claiming it needs a particular chain, and it has three answers
-here. The first is the one encryption cannot reach.
+Hide every figure and a transparent chain still publishes *what happened*: that the buyer filed
+late, that a quarter was disputed, that the arbiter was called. In an earnout that is not metadata —
+a visible dispute tells a competitor the acquisition is going badly while the deal is still running.
+On Canton buyer, seller, arbiter and bank each hold only the transactions they are a party to, so a
+disputed quarter is a fact the three of them share and, for anyone outside, never happened.
 
-**Hide every figure and a transparent chain still publishes what happened.** That the buyer filed
-late. That a quarter was disputed. That the arbiter was called. In an earnout none of that is
-metadata: a visible dispute tells a competitor the acquisition is going badly and tells the other
-side that leverage has appeared, while the deal is still running. Canton does not keep one shared copy of the
-ledger. Buyer, seller, arbiter and bank each hold the transactions they are a party to and nothing
-else, so the disputed quarter is a fact the three of them share, and for anyone outside it never
-happened.
-
-The logic would survive a move to a transparent chain. The willingness to sign would not, and
-every party this is built for is one whose reason for agreeing to an earnout at all is that the
-outcome is not yet public.
-
-### The transparent-chain test
-
-*"If this moved to a globally transparent chain tomorrow, what breaks?"*
+#### The transparent-chain test: if this moved to a globally transparent chain tomorrow, what breaks?
 
 1. **The acquirer's quarterly financials would be public.** A private company's revenue, cash flow, and account activity cannot go on a transparent chain. Here, the seller sees *verdicts and metric values only*; raw transaction data stays off-chain, hash-committed; the arbiter accesses the basis only on dispute.
 2. **A central database has no home.** The buyer's system? The seller won't trust it (that *is* the problem). The seller's? Symmetric. An escrow agent holds money but does not adjudicate. The product is precisely *a record neither side can own or amend*.
 3. **Adjudication and payment settle atomically.** Verdict finalization creates a payment obligation; `Settle` transfers the token and closes the contract in a single transaction — no "judgment won, payment stalled" gap.
 
-## Adversarial properties (all ledger-enforced — five asserted by tests, two unrepresentable)
+### Adversarial properties (all ledger-enforced — five asserted by tests, two unrepresentable)
 
 | Attack | Result |
 |---|---|
@@ -75,7 +79,7 @@ outcome is not yet public.
 
 Run them yourself: `dpm test --package-root tests` (21 transactions, 5 must-fail scenarios).
 
-## Repository layout
+### Repository layout
 
 ```
 ledger/   Daml templates (earnout-ledger) — the state machine, no test deps
@@ -87,7 +91,7 @@ docs/     demo page, replay page, clause self-check, DevNet record, validation n
 tools/    CI checks for borrowed wording and unsourced figures
 ```
 
-## Running it
+### Running it
 
 Prereqs: JDK 17+, [DPM](https://docs.digitalasset.com/), Docker Desktop (8 GB), the
 [cn-quickstart](https://github.com/digital-asset/cn-quickstart) LocalNet.
@@ -110,14 +114,14 @@ The UI is a deliberate demonstration of Canton's visibility model: each panel re
 that party's **actual ACS** from the participant node. The arbiter's panel has no
 CashToken; the seller's has no raw basis. That is not UI filtering — it is the ledger.
 
-## Honest limitations
+### Honest limitations
 
 - **The oracle boundary.** The ledger guarantees *who signed what, when, and that nobody can change it* — not that the signed numbers are true. Data truthfulness sits with the attestor (a regulated bank signing its own account records — a function banks already perform). A colluding attestor defeats the system, as it defeats every audit regime.
 - **Operating vs. non-operating classification.** The MVP has the bank attest a computed metric. A production design would fix the classification rules in the SPA and have the bank attest only the raw snapshot.
 - **Cash-flow timing.** A buyer can shift payment dates across quarter ends. The 3-of-4 structure preserves totals across quarters and quarter-end bulk payments are flaggable, but this is mitigation, not prevention.
 - **Attribution.** The ledger fixes *numbers*, not *causes* — whether underperformance stems from suppression or a lost customer stays a human question, scoped to the arbiter.
 
-## Status and provenance
+### Status and provenance
 
 **Pre-hackathon foundation (Aug 2026, before Season 3 opened).** Disclosed per the hackathon rules on pre-existing code.
 - Daml model `0.0.6` (4-party workflow; 5 adversarial scenarios asserted to fail under `submitMustFail`, plus 2 that the model cannot express at all).
@@ -137,7 +141,7 @@ subject tag, which was dropped once the log itself became the record.
 - [ ] Not done in the season: validation interviews with earnout practitioners (M&A advisors / escrow agents / search-fund operators). Outreach went out and no reply had come back by the deadline; `docs/validation.md` records that rather than a result.
 - [ ] Not done in the season: journal, pitch deck, and pilot brief revisions from those interviews. The pitch deck in `docs/pitch/` is the Sep 18 version and predates the DevNet run and the 3:47 video; this README is the current status.
 
-## Running it against a ledger
+### Running it against a ledger
 
 LocalNet is the default, because it is what a clone can bring up:
 
@@ -157,7 +161,7 @@ node ui/server.mjs
 A DAR upload that the shared node refuses is reported and stepped over, because there the DAR
 arrives out of band.
 
-## License
+### License
 
 Apache License 2.0 — see [`LICENSE`](LICENSE). Apache-2.0 rather than MIT because this is ledger
 code with an explicit patent grant, which is what an enterprise counterparty evaluating it would
