@@ -1,15 +1,15 @@
 -- Earnout Settlement Ledger — core state machine
--- 조건·판정로직을 계약 시점에 양측 서명으로 고정하고,
--- 분기 판정 → 이의 → 중재 → 지급을 하나의 원장에서 처리한다.
+-- 서명 시점에 고정한 조건으로 분기 판정 → 이의 → 중재 → 지급을 한 원장에서 처리한다.
+
 module Earnout where
 
 import DA.Foldable (forA_)
 import DA.List (sort)
 import DA.Optional (isSome)
 
--- ---------------------------------------------------------------------------
+
 -- 지급 leg용 최소 토큰 (MVP: mock. stretch: Canton Coin/생태계 자산으로 교체)
--- ---------------------------------------------------------------------------
+
 template CashToken
   with
     issuer : Party
@@ -24,10 +24,10 @@ template CashToken
       controller owner
       do create this with owner = newOwner
 
--- ---------------------------------------------------------------------------
+
 -- 0. 지표 데이터 출처 — 지정계좌 스냅샷에 대한 제3자(은행·회계법인) 서명
 --    Buyer는 이 attestation 없이는 분기 지표를 제출할 수 없다 (oracle 경계의 명시)
--- ---------------------------------------------------------------------------
+
 template MetricAttestation
   with
     dealId         : Text
@@ -46,17 +46,17 @@ template MetricAttestation
       controller buyer
       do pure ()
 
--- ---------------------------------------------------------------------------
+
 -- 1. 제안 → 수락 (조건 고정)
--- ---------------------------------------------------------------------------
+
 data EarnoutTerms = EarnoutTerms
   with
     dealId          : Text     -- 거래 식별자 — 판정·분쟁·지급 계약이 이 값을 승계해 세대를 격리한다
     metricName      : Text     -- 예: "영업 순현금흐름 (분기)"
-    quarterlyTarget : Decimal  -- 분기 목표치
-    totalQuarters   : Int      -- 판정 횟수 (4)
-    requiredMet     : Int      -- 충족 요구 분기 수 (3)
-    trancheAmount   : Decimal  -- 언아웃 잔금
+    quarterlyTarget : Decimal
+    totalQuarters   : Int
+    requiredMet     : Int
+    trancheAmount   : Decimal
   deriving (Eq, Show)
 
 template EarnoutProposal
@@ -100,7 +100,7 @@ template EarnoutAgreement
           (att.dealId == terms.dealId && att.buyer == buyer)
         assertMsg "quarters must be reported in order, once each"
           (att.quarter == nextQuarter && att.quarter <= terms.totalQuarters)
-        exercise attestationCid Use  -- 단일 사용 소비
+        exercise attestationCid Use
         let met = att.metricValue >= terms.quarterlyTarget
             -- 일회성 출금을 제외하면 목표를 넘는 경우: 실적 억압 의심 플래그
             flagged = not met && (att.metricValue + att.oneOffOutflows >= terms.quarterlyTarget)
@@ -123,8 +123,8 @@ template EarnoutAgreement
         verdicts <- forA verdictCids fetch
         assertMsg "verdict count must equal total quarters"
           (length verdicts == terms.totalQuarters)
-        -- 이 계약의 verdict인지 + 분기 중복 없는지 검사
-        -- (동일 충족 verdict를 반복 제출해 판정을 부풀리는 공격 차단)
+
+        -- 같은 deal의 verdict만, 분기 중복 없이 (반복 제출로 부풀리기 차단)
         forA_ verdicts \v ->
           assertMsg "verdict does not belong to this agreement"
             (v.dealId == terms.dealId && v.buyer == buyer && v.seller == seller)
@@ -147,9 +147,9 @@ effectiveMet v = case v.resolution of
   Some r -> r
   None   -> v.met
 
--- ---------------------------------------------------------------------------
+
 -- 2. 분기 판정 기록 (양측 서명 → 위조·재해석 불가)
--- ---------------------------------------------------------------------------
+
 template QuarterVerdict
   with
     dealId      : Text
@@ -182,9 +182,9 @@ template QuarterVerdict
       controller arbiter
       do create this with resolution = Some resolvedMet
 
--- ---------------------------------------------------------------------------
+
 -- 3. 분쟁 → 중재 (분쟁 시에만 arbiter가 원시 근거 접근)
--- ---------------------------------------------------------------------------
+
 template Dispute
   with
     dealId        : Text
@@ -205,9 +205,9 @@ template Dispute
       controller arbiter
       do exercise verdictCid ApplyResolution with resolvedMet
 
--- ---------------------------------------------------------------------------
+
 -- 4. 지급의무 → 토큰 지급 + 종결 (atomic)
--- ---------------------------------------------------------------------------
+
 template SettlementObligation
   with
     dealId : Text

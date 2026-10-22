@@ -9,14 +9,7 @@ import { fileURLToPath } from "node:url";
 
 const PORT = process.env.PORT || 8090;
 
-// Two ledgers, one server. LocalNet is the default because that is what a clone
-// can run; DevNet is the shared HackCanton node, where we are a guest: the token
-// comes from the Console Wallet and the parties are provisioned for us, so
-// nothing here may assume it can mint either.
-//
-//   LocalNet  (default)  — credentials read out of the splice-onboarding container
-//   DevNet    LEDGER_API=https://<node>/  LEDGER_TOKEN=<jwt from Console Wallet>
-//             LEDGER_USER_ID=<user>  PARTY_EBUYER=…  PARTY_ESELLER=…  PARTY_EARBITER=…  PARTY_EBANK=…
+// LocalNet by default; on the shared DevNet node token and parties are supplied via env (see README).
 const API = process.env.LEDGER_API || "http://localhost:3975";
 const STATIC_TOKEN = process.env.LEDGER_TOKEN || null;
 const KC = process.env.LEDGER_TOKEN_URL || "http://keycloak.localhost:8082/realms/AppProvider/protocol/openid-connect/token";
@@ -28,8 +21,6 @@ const PRESET_PARTIES = Object.fromEntries(
 );
 
 // ---- LocalNet 자격증명 (splice-onboarding 컨테이너 env에서 1회 취득) ----
-// A supplied token means we are not on LocalNet, and the container is not there
-// to ask — reading it would fail before the first request.
 const cenv = (k) => execFileSync("docker", ["exec", "splice-onboarding", "printenv", k]).toString().trim();
 const CLIENT_ID = STATIC_TOKEN ? null : cenv("AUTH_APP_PROVIDER_VALIDATOR_CLIENT_ID");
 const CLIENT_SECRET = STATIC_TOKEN ? null : cenv("AUTH_APP_PROVIDER_VALIDATOR_CLIENT_SECRET");
@@ -60,8 +51,6 @@ async function api(path, opts = {}) {
 // ---- 부트스트랩: DAR 업로드 + 파티 4개 + 권한 ----
 const PARTIES = {}; // role -> partyId
 async function bootstrap() {
-  // On a shared node the DAR is uploaded out of band and this will be refused;
-  // that is not an error worth stopping for, so it is reported and passed over.
   if (STATIC_TOKEN) {
     // A tenant token cannot upload packages; on the shared node the DAR goes through the Console.
     console.log("DAR: not uploaded from here (supplied token) — expected to be on the node already");

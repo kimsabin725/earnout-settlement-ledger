@@ -37,7 +37,6 @@ demo = script do
       dealId = "DEAL-TEST-1"; attestor = bank; buyer; quarter = 1
       metricValue = 99_000_000.0; oneOffOutflows = 0.0; basisHash = "sha256:self-attested"
 
-  -- 1) Q1: 은행 서명 92.0M → 제출 → 충족
   a1 <- attest 1 92_000_000.0 0.0
   (agr1, v1) <- submit buyer do
     exerciseCmd agr SubmitQuarter with attestationCid = a1
@@ -51,7 +50,6 @@ demo = script do
   submitMustFail buyer do
     exerciseCmd agr1 SubmitQuarter with attestationCid = a3early
 
-  -- 2) Q2: 86.0M → 충족
   a2 <- attest 2 86_000_000.0 0.0
   (agr2, v2) <- submit buyer do
     exerciseCmd agr1 SubmitQuarter with attestationCid = a2
@@ -68,7 +66,6 @@ demo = script do
       verdictCid = v3; resolvedMet = True
       reasoning = "one-off consulting fee excluded per SPA definition of operating outflow"
 
-  -- 4) Q4: 79.0M → 미충족 (플래그 없음, 정상 미달)
   a4 <- attest 4 79_000_000.0 0.0
   (agr4, v4) <- submit buyer do
     exerciseCmd agr3 SubmitQuarter with attestationCid = a4

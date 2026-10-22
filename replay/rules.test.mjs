@@ -1,11 +1,4 @@
-// Drives docs/clause-check.html through every combination of its answers and
-// compares each verdict with what the harness would say about the same clause.
-//
-// The page exists to tell a practitioner whether this model can hold their
-// clause. A page that refuses a clause the model can hold does the opposite of
-// its job: it tells someone to stop reading when they were the person to talk to.
-//
-// Run: node replay/rules.test.mjs
+// Drives docs/clause-check.html through every answer combination and compares each verdict with rules.mjs.
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { launch } from './browser.mjs';
@@ -13,12 +6,9 @@ import { check } from './rules.mjs';
 
 const PAGE = 'file://' + path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../docs/clause-check.html');
 
-// What a practitioner answering this way actually has. Where one answer could
-// mean two different clauses, that ambiguity is a fault in the question, and the
-// mapping says which reading it takes.
+// The clause a practitioner answering this way has.
 function clauseFor(a) {
-  // "Once" is a single measurement period that has to be met — which is exactly
-  // how Prosser v. PharmaLogic is written as a clause file.
+  // "once" = one period that must be met, as Prosser v. PharmaLogic is written
   const periods = a.threshold === 'single-period' ? 1 : 4;
   const terms = {
     periodBasis: a.basis,

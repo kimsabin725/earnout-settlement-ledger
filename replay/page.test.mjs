@@ -1,22 +1,11 @@
-// Does the page route a real clause the way the harness does?
-//
-// rules.test.mjs checks that the page agrees with the harness about a clause I
-// described. This checks the harder thing: that a practitioner holding a known
-// clause, answering honestly, lands where the harness lands. The gap between
-// those two is the page's actual job — translating what someone has into what
-// the model can hold — and it is where the page can be wrong while agreeing
-// with itself.
-//
-// Run: node replay/page.test.mjs
+// Checks that a practitioner answering honestly about a known clause lands where the harness does.
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { launch } from './browser.mjs';
 
 const PAGE = 'file://' + path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../docs/clause-check.html');
 
-// Each fixture is a clause someone really holds, the answers an honest reader
-// would give, and what the harness says about that clause when it is written
-// as a clause file.
+// A real clause, the answers an honest reader would give, and the harness's verdict on it.
 const FIXTURES = [
   {
     name: 'Prosser v. PharmaLogic — one measurement period, EBITDA cliff (the one real clause that replays)',

@@ -1,12 +1,4 @@
-// Turns a source text into hashed n-grams, so the check can run without this
-// repository carrying someone else's words.
-//
-// The point of the check is to catch our own prose drifting into phrasing we
-// read somewhere. Storing the sources verbatim to detect that would be a
-// strange way to go about it — republishing them to prove we are not
-// republishing them. Hashes are enough: a match tells us which of *our*
-// sentences to look at, which is the only part we need to read.
-//
+// Hashed n-grams of a source text, so the repo stores no one else's words.
 // Usage: node tools/fingerprint.mjs <label> <file...>  >> tools/borrowed.json
 import fs from 'node:fs';
 import crypto from 'node:crypto';

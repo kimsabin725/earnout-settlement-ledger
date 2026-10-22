@@ -1,15 +1,4 @@
-// Fails if our prose shares a run of words with something we read.
-//
-// Written after three sentences turned up paraphrased from a previous season's
-// winning submission. A list of phrases I remembered borrowing found none of
-// them; this found all three, including one I had kept because it read like a
-// plain description of Canton.
-//
-// A hit is not automatically plagiarism — a deal's terms have only so many ways
-// of being stated. It is a place to look, and the reviewer decides. Facts that
-// must be phrased a certain way go in ALLOW with the reason.
-//
-// Run: node tools/check-borrowed.mjs
+// Fails if our prose shares a run of N words with a source in tools/borrowed.json.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,8 +6,7 @@ import { fingerprints, words, N } from './fingerprint.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
-// Prose a judge reads. Code and generated files are excluded: replay.html is
-// built from the clause files, so a hit there belongs to the clause file.
+// replay.html is built from the clause files, so the clause files are checked instead.
 const FILES = [
   'README.md',
   'docs/validation.md',
@@ -26,12 +14,11 @@ const FILES = [
   ...fs.readdirSync(path.join(root, 'replay/clauses')).filter((f) => f.endsWith('.json')).map((f) => `replay/clauses/${f}`),
 ];
 
-// Shared wording that is a fact about a deal rather than a way of writing.
 const ALLOW = [
   'to sales and net revenue milestones',        // Fortis v. Medtronic's terms
-  'tied to sales and net revenue',              //   "
+  'tied to sales and net revenue',
   'two commercial and eight regulatory',        // Fortis v. J&J's terms
-  'commercial and eight regulatory milestones', //   "
+  'commercial and eight regulatory milestones',
   'up to 2 35 billion in additional consideration',  // the Auris figure
 ];
 
@@ -39,9 +26,7 @@ const corpus = JSON.parse(fs.readFileSync(path.join(root, 'tools/borrowed.json')
 const index = new Map();
 for (const src of corpus) for (const h of src.hashes) index.set(h, src.label);
 
-// An allowed phrase covers every window inside it, not just its first — the
-// normaliser splits "$2.35bn" into two tokens, so the window that matches is
-// rarely the one the phrase starts with.
+// every window of an allowed phrase, since the normaliser splits "$2.35bn" into two tokens
 const allowed = new Set();
 for (const a of ALLOW) for (const h of fingerprints(a)) allowed.add(h);
 

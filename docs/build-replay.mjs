@@ -1,13 +1,4 @@
-// Builds docs/replay.html from the clause files themselves.
-//
-// The central claim in docs/validation.md is that a clause nobody here wrote
-// replays to the payout the parties actually settled on. That claim currently
-// lives in a markdown table. This makes it something a judge can click through
-// period by period — and because the page is generated from the same clause
-// files and the same rules the harness uses, it cannot drift into saying
-// something the harness does not.
-//
-// Run: node docs/build-replay.mjs
+// Builds docs/replay.html from the clause files with the harness's own rules, so the page cannot drift from it.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,11 +32,9 @@ function periodRows(c) {
 const cards = clauses.map((c) => {
   const refused = c.reasons.length > 0;
   const settled = c.settled?.payout;
-  // The label already reads "Case name — what makes it interesting"; splitting on
-  // the dash gives a heading a human wrote rather than one derived from an id.
+  // label is "Case name — detail"; the part before the dash is the heading
   const [first, ...rest] = c.label.split(/\s+[—–-]\s+/);
-  // Real cases carry their own name; the synthetics are all labelled "Synthetic",
-  // so those fall back to the id, which is what distinguishes them.
+  // synthetics all share the label "Synthetic", so they fall back to the id
   const name = /^synthetic$/i.test(first.trim())
     ? c.id.replace(/^Synthetic/, 'Synthetic: ').replace(/([a-z])([A-Z])/g, '$1 $2')
     : first;

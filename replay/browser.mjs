@@ -1,8 +1,4 @@
-// Finding a Chromium to drive, wherever this runs.
-//
-// On the machine this was built on, playwright-core lives beside another tool
-// and Brave supplies the browser. In CI neither is true. A test that only runs
-// in one place is a test that stops running.
+// Finds a Chromium to drive: local playwright-core + Brave on the dev machine, playwright in CI.
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
 

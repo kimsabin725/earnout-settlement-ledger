@@ -1,10 +1,4 @@
-// What the signed terms can hold, in one place.
-//
-// The harness compiles clause files with these rules; the clause self-check page
-// (docs/clause-check.html) asks the same questions in words and has to reach the
-// same verdict. `rules.test.mjs` drives the page through every combination of its
-// answers and fails if the two ever disagree — a page that quietly says "refused"
-// about a clause this model can hold is worse than no page.
+// What the signed terms can hold. docs/clause-check.html must agree; rules.test.mjs checks that.
 
 const SUPPORTED = {
   periodBasis: ['per-period'],
@@ -46,8 +40,7 @@ export function check(clause) {
   return reasons;
 }
 
-// The reference arithmetic. The ledger run is the answer; this is the pre-check,
-// and the replay viewer shows its working.
+// Reference arithmetic: a pre-check only, the ledger run is the answer.
 export function evaluate(clause) {
   const t = clause.terms, target = t.metricTarget;
   const verdicts = clause.schedule.map((q) => {
