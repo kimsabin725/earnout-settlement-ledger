@@ -21,8 +21,17 @@
 </style></head><body><div class="w">
  <div class="kick">HackCanton Season 3 · RWA &amp; Business Workflows</div>
  <h1>Earnout Settlement Ledger — demo</h1>
- <p class="lede">A complete earnout lifecycle on Canton — four parties, rules locked at signing, a forged verdict that fails on the ledger — and then the harder test: earnout clauses from the public record that I did not write, replayed against their own history.</p>
- <video controls preload="metadata" playsinline poster="demo/poster-s3.jpg">
+ <p class="lede"><b>Problem.</b> After closing, the buyer keeps the books an earnout pays on; the seller cannot verify them.<br>
+ <b>Built.</b> A four-party Canton workflow: terms, data source and arbiter locked at signing, each quarter adjudicated on-ledger, payment settled atomically with closure.<br>
+ <b>Proved.</b> A public-record clause (Prosser v. PharmaLogic) replays to the payout actually made, four others are refused with the reason, and the full lifecycle ran on the shared DevNet node.</p>
+ <div class="links">
+   <a class="btn" href="#video">Demo video</a>
+   <a class="btn" href="replay.html">Replay page</a>
+   <a class="btn" href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/devnet.md">DevNet record</a>
+   <a class="btn" href="clause-check.html">Clause self-check</a>
+ </div>
+ <!-- VIDEO_URL_PLACEHOLDER: add <a class="btn" href="(YouTube URL)">Watch on YouTube</a> here once uploaded -->
+ <video id="video" controls preload="metadata" playsinline poster="demo/poster-s3.jpg">
    <source src="demo/earnout-demo-s3.mp4" type="video/mp4">
  </video>
  <p class="cap">3 min 47 s · English captions. The ledger walkthrough was recorded on LocalNet; the same model now runs on the shared DevNet node, with the update ids in <a href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/devnet.md">docs/devnet.md</a>.</p>
@@ -45,5 +54,6 @@
    <a class="btn" href="https://github.com/kimsabin725/earnout-settlement-ledger/blob/main/docs/business-brief.md">Business brief</a>
    <a class="btn" href="demo/earnout-demo-s3.mp4">Download the video</a>
  </div>
+ <p class="cap">Replay page and self-check are static and run in your browser. The full 3-panel UI needs a ledger (LocalNet or DevNet) — see “Running it” in the README.</p>
  <footer>Daml model 0.0.6 · 21 transactions, 5 must-fail scenarios: <code>dpm test --package-root tests</code></footer>
 </div></body></html>
