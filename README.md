@@ -4,7 +4,7 @@
 **Built.** A four-party Canton workflow (buyer, seller, bank attestor, arbiter): terms, data source and arbiter are locked at signing, each quarter is adjudicated on-ledger, and payment settles atomically with closure.\
 **Proved.** A clause from the public record (Prosser v. PharmaLogic) replays to the payout actually made and four others are refused with the reason; the full lifecycle ran on the shared DevNet node (15 ledger updates, [`docs/devnet.md`](docs/devnet.md)).
 
-▶ Demo video: VIDEO_URL_PLACEHOLDER (until then it plays on the [demo page](https://kimsabin725.github.io/earnout-settlement-ledger/))\
+▶ Demo video: https://youtu.be/6kGqjZl3dRw\
 ▶ Live replay page: https://kimsabin725.github.io/earnout-settlement-ledger/replay.html — static, runs in the browser; the full 3-panel UI needs a ledger ([Running it](#running-it))
 
 | | |
